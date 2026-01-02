@@ -31,6 +31,7 @@ for kayttaja in "$@"; do
 
 	chown "$kayttaja:$kayttaja" "$home/.ssh" -R
 
+	rm -rf "$data/$kayttaja"
 	mkdir "$data/$kayttaja"
 
 	chown "$kayttaja:$kayttaja" "$data/$kayttaja"
