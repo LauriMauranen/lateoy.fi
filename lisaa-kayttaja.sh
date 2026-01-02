@@ -33,7 +33,7 @@ for kayttaja in "$@"; do
 
 	mkdir "$data/$kayttaja"
 
-	chown "$kayttaja:nginx" "$data/$kayttaja"
+	chown "$kayttaja:$kayttaja" "$data/$kayttaja"
 
 	echo "Luotiin tarvittavat kansiot käyttäjälle $kayttaja"
 done
