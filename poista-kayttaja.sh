@@ -31,21 +31,8 @@ for kayttaja in "$@"; do
 		continue
 	fi
 
-	useradd -s /bin/bash -U -m -G users "$kayttaja" || exit 2
+	userdel -r "$kayttaja" || exit 2
 
-	echo "Luotiin käyttäjä $kayttaja"
-	
-	home="/home/$kayttaja/"
-
-	mkdir "$home/.ssh"
-	touch "$home/.ssh/authorized_keys"
-	chown "$kayttaja:$kayttaja" "$home/.ssh" -R
-
-	echo "Luotiin kansio .ssh käyttäjälle $kayttaja"
-
-	luoKansio "$data" "$kayttaja"
-	luoKansio "$log" "$kayttaja"
-
-	mkdir "$log/$kayttaja/nginx"
-	chown "$kayttaja:$kayttaja" "$log/$kayttaja" -R
+	rm -r "$data/$kayttaja"
+	rm -r "$log/$kayttaja"
 done
