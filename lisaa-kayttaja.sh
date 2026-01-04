@@ -46,6 +46,8 @@ for kayttaja in "$@"; do
 	luoKansio "$data" "$kayttaja"
 	luoKansio "$log" "$kayttaja"
 
+	echo "Terve $kayttaja!" > "$data/$kayttaja/index.html"
+
 	mkdir "$log/$kayttaja/nginx"
 	chown "$kayttaja:$kayttaja" "$log/$kayttaja" -R
 done
