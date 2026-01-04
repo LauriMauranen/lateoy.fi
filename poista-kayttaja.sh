@@ -12,16 +12,6 @@ if [[ $@ =~ (^|\ )- ]]; then
 	exit 1
 fi
 
-luoKansio() {
-	kayttaja="$2"
-	kansio="$1/$kayttaja"
-
-	mkdir -p "$kansio"
-	chown "$kayttaja:$kayttaja" "$kansio"
-
-	echo "Luotiin kansio $kansio käyttäjälle $kayttaja"
-}
-
 data=/www-data/
 log=/var/log/
 
