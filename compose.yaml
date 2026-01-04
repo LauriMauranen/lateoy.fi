@@ -10,3 +10,9 @@ services:
       - /home/lauri/lateoy.fi/conf.d/:/etc/nginx/conf.d/:ro
       - /var/log/:/var/log/
       - /www-data/:/www-data/:ro
+    networks:
+      - nginx-network
+
+networks:
+  nginx-network:
+    driver: bridge
