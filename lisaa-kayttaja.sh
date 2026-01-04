@@ -1,6 +1,7 @@
 #!/bin/bash
 
 set -euo pipefail
+shopt -s extglob
 
 if [[ "$#" == 0 ]]; then
 	echo "Anna ainakin yksi käyttäjä"
@@ -14,7 +15,9 @@ fi
 
 luoKansio() {
 	kayttaja="$2"
+
 	kansio="$1/$kayttaja"
+	kansio=${kansio//+(\/)/\/}
 
 	mkdir -p "$kansio"
 	chown "$kayttaja:$kayttaja" "$kansio"
