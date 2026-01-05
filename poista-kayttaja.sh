@@ -21,6 +21,11 @@ for kayttaja in "$@"; do
 		continue
 	fi
 
+	if [[ $(grep -c ^$kayttaja: /etc/passwd) == 0 ]]; then
+		echo "Käyttäjää $kayttaja ei ole olemassa, ohitetaan"
+		continue
+	fi
+
 	userdel -r "$kayttaja" || exit 2
 
 	rm -r "$data/$kayttaja"
