@@ -34,6 +34,11 @@ for kayttaja in "$@"; do
 		continue
 	fi
 
+	if [[ $(grep -c ^$kayttaja: /etc/passwd) > 0 ]]; then
+		echo "Käyttäjä $kayttaja on jo olemassa, ohitetaan"
+		continue
+	fi
+
 	useradd -s /bin/bash -U -m -G users "$kayttaja" || exit 2
 
 	echo "Luotiin käyttäjä $kayttaja"
