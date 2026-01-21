@@ -1,0 +1,42 @@
+server {
+        listen 80;
+
+	server_name {{ domain }};
+
+	return 301 https://{{ domain }}$request_uri;
+}
+
+server {
+        listen 443 ssl;
+
+	server_name {{ domain }};
+
+	ssl_certificate     /etc/letsencrypt/live/{{ cert-domain }}/fullchain.pem;
+	ssl_certificate_key /etc/letsencrypt/live/{{ cert-domain }}/privkey.pem;
+
+        error_log /var/log/lateoy.fi/{{ domain }}/nginx/error.log;
+        access_log /var/log/lateoy.fi/{{ domain }}/nginx/access.log;
+
+	root /www-data/{{ domain }};
+
+	# ota pois kun asiat toimii
+	add_header Cache-Control 'no-store';
+
+        location = / {
+		try_files /index.html @backend;
+        }
+
+        location / {
+		try_files $uri @backend;
+        }
+
+        location @backend {
+                proxy_pass http://{{ domain }}:{{ backend-port }};
+                proxy_set_header Host              $host;
+                proxy_set_header X-Forwarded-For   $proxy_add_x_forwarded_for;
+                proxy_set_header X-Real-IP         $remote_addr;
+                proxy_set_header X-Forwarded-Host  $host;
+                proxy_set_header X-Forwarded-Proto $scheme;
+                proxy_set_header X-Forwarded-Port  $server_port;
+        }
+}
