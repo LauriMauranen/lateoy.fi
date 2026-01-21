@@ -1,12 +1,13 @@
 services:
   nginx:
     image: "docker.io/nginx:1.29.4-alpine"
+    container_name: nginx
     ports:
       - "80:80"
       - "443:443"
     volumes: 
-      - /etc/letsencrypt:/etc/letsencrypt
+      - /etc/letsencrypt:/etc/letsencrypt:ro
       - /home/lauri/lateoy.fi/nginx.conf:/etc/nginx/nginx.conf:ro
-      - /home/lauri/lateoy.fi/conf.d/:/etc/nginx/conf.d/:ro
+      - /home/lauri/nginx/conf.d/:/etc/nginx/conf.d/:ro
       - /var/log/:/var/log/
       - /www-data/:/www-data/:ro

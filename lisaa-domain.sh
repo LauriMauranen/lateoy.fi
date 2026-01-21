@@ -33,7 +33,7 @@ backend_portti="$3"
 
 data=/www-data/
 log=/var/log/lateoy.fi/
-nginx_conf="/etc/nginx/conf.d/$domain.conf"
+nginx_conf="/home/lauri/nginx/conf.d/$domain.conf"
 nginx_template=/home/lauri/lateoy.fi/conf.d/user-template
 
 cert_domain="$domain"
@@ -53,4 +53,8 @@ sed_3="s/{{ backend-port }}/${backend_portti}/g"
 
 sed -e "$sed_1" -e "$sed_2" -e "$sed_3" "$nginx_template" > "$nginx_conf"
 
-nginx -s reload
+echo "Luotiin $nginx_conf"
+
+podman exec nginx nginx -s reload
+
+echo "Ladattiin uusi nginx-konfiguraatio. https://$domain toimii nyt."
