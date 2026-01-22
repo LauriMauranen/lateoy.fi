@@ -23,6 +23,7 @@ while getopts "h" flag; do
 	   echo "Lisää domainille nginx-konfiguraation, lokitus-kansion, www-data -kansion ja ajaa 'nginx -s reload'."
 	   echo
 	   echo "  -h            Tulosta tämä viesti."	
+	   exit 0
 		;;
     esac
 done
@@ -57,4 +58,4 @@ echo "Luotiin $nginx_conf"
 
 podman exec nginx nginx -s reload
 
-echo "Ladattiin uusi nginx-konfiguraatio. https://$domain toimii nyt."
+echo "Ladattiin uusi nginx-konfiguraatio. $domain täytyy vielä lisätä Linoden A/AAAA rekisteriin."

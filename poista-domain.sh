@@ -9,13 +9,13 @@ while getopts "h" flag; do
 	   echo "Poistaa domainin nginx-konfiguraation, lokitus-kansion, www-data -kansion ja ajaa 'nginx -s reload'."
 	   echo
 	   echo "  -h            Tulosta tämä viesti."	
+	   exit 0
 		;;
     esac
 done
 
 data=/www-data/
 log=/var/log/lateoy.fi/
-nginx_conf=/home/lauri/nginx/conf.d/
 
 for domain in "$@"; do
 	if [[ -z "$domain" ]]; then
@@ -23,14 +23,16 @@ for domain in "$@"; do
 		continue
 	fi
 
-	if [[ ! -e "$nginx_conf/$domain" ]]; then
+	nginx_conf="/home/lauri/nginx/conf.d/$domain.conf"
+
+	if [[ ! -e "$nginx_conf" ]]; then
 		echo "Domainia $domain ei ole olemassa, ohitetaan"
 		continue
 	fi
 
 	rm -r "$data/$domain"
 	rm -r "$log/$domain"
-	rm -r "$nginx_conf/$domain"
+	rm -r "$nginx_conf"
 done
 
 podman exec nginx nginx -s reload
