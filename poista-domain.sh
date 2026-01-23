@@ -36,3 +36,5 @@ for domain in "$@"; do
 done
 
 podman exec nginx nginx -s reload
+
+echo "Ladattiin uusi nginx-konfiguraatio."

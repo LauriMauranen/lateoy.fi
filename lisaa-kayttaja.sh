@@ -11,7 +11,7 @@ while getopts "hd:" flag; do
         h) echo "lisaa-kayttaja [ASETUKSET] kayttaja" 
 	   echo
 	   echo "  -h            Tulosta tämä viesti."	
-	   echo "  -d DOMAIN     Aseta domain käyttäjälle. Jos tyhjä niin domain on 'kayttaja.lateoy.fi'"	
+	   echo "  -d DOMAIN     Aseta domain käyttäjälle. Jos tyhjä niin luo domainin kayttaja.lateoy.fi"	
 		;;
         d) domain=$OPTARG ;;
     esac
@@ -29,7 +29,7 @@ if [[ $(grep -c ^$kayttaja: /etc/passwd) > 0 ]]; then
 	exit 1
 fi
 
-useradd -s /bin/bash -U -m -G users "$kayttaja" || exit 2
+useradd -s /bin/bash -U -m -G users "$kayttaja" || exit 1
 
 echo "Luotiin käyttäjä $kayttaja"
 
@@ -41,4 +41,4 @@ chown "$kayttaja:$kayttaja" "$home/.ssh" -R
 
 echo "Luotiin kansio .ssh käyttäjälle $kayttaja"
 
-lisaa-domain.sh "$kayttaja" "$domain"
+lisaa-domain.sh "$kayttaja" "$domain" 8100
