@@ -51,6 +51,8 @@ sed_3="s/{{ backend-port }}/$backend_portti/g"
 
 sed -e "$sed_1" -e "$sed_2" -e "$sed_3" "$nginx_template" > "$nginx_conf"
 
+chown lauri:lauri "$nginx_conf"
+
 echo "Luotiin $nginx_conf"
 
 podman exec nginx nginx -s reload

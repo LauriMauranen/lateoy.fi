@@ -33,8 +33,10 @@ for domain in "$@"; do
 	rm -r "$data/$domain"
 	rm -r "$log/$domain"
 	rm -r "$nginx_conf"
+
+	echo "Poistettin domainiin $domain liittyvät kansiot ja tiedostot."
 done
 
 podman exec nginx nginx -s reload
 
-echo "Poistettin domainiin liittyvät kansiot ja tiedostot ja ladattiin uusi nginx-konfiguraatio."
+echo "Ladattiin uusi nginx-konfiguraatio."
