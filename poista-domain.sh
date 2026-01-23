@@ -37,4 +37,4 @@ done
 
 podman exec nginx nginx -s reload
 
-echo "Ladattiin uusi nginx-konfiguraatio."
+echo "Poistettin domainiin liittyvät kansiot ja tiedostot ja ladattiin uusi nginx-konfiguraatio."
