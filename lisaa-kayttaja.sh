@@ -12,6 +12,7 @@ while getopts "hd:" flag; do
 	   echo
 	   echo "  -h            Tulosta tämä viesti."	
 	   echo "  -d DOMAIN     Aseta domain käyttäjälle. Jos tyhjä niin luo domainin kayttaja.lateoy.fi"	
+	   exit 0
 		;;
         d) domain=$OPTARG ;;
     esac
