@@ -13,9 +13,30 @@ luoKansio() {
 	echo "Luotiin kansio $kansio käyttäjälle $kayttaja"
 }
 
+seuraavaPortti() {
+    tiedosto="$1"
+    local portti=
+
+    # luetaan ensimmäinen rivi
+    while read -r rivi; do
+      portti="$rivi"
+      break
+    done <$tiedosto
+
+    if [[ (( $portti > 7999 )) || (( $portti < 8999 )) ]]; then
+	# poistetaan portti tiedostosta
+	sed '1d' -i $tiedosto
+    else
+	echo "Portin pitää olla välillä 8000-8999! ($portti)"
+	portti=
+    fi
+
+    echo $portti
+}
+
 while getopts "h" flag; do
     case "${flag}" in
-        h) echo "Käyttö: lisaa-domain kayttaja domain backend-portti" 
+        h) echo "Käyttö: lisaa-domain kayttaja domain" 
 	   echo
 	   echo "Lisää domainille nginx-konfiguraation, lokitus-kansion, www-data -kansion ja ajaa 'nginx -s reload'."
 	   echo
@@ -27,12 +48,15 @@ done
 
 kayttaja="$1"
 domain="$2"
-backend_portti="$3"
 
 data="/www-data/$domain"
 log="/var/log/lateoy.fi/$domain"
 nginx_conf="/home/lauri/nginx/conf.d/$domain.conf"
 nginx_template=/home/lauri/lateoy.fi/conf.d/user-template
+portit=/home/lauri/nginx/porttinumerot.txt
+
+backend_portti=$(seuraavaPortti $portit)
+[[ -z $backend_portti ]] && exit 1
 
 cert_domain="$domain"
 [[ "$cert_domain" =~ lateoy\.fi ]] && cert_domain=lateoy.fi

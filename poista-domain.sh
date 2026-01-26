@@ -2,6 +2,23 @@
 
 set -euo pipefail
 
+laitaPorttiTakaisin() {
+    portit="$1"
+    nginx_conf="$2"
+    domain=${nginx_conf##*/}
+    domain=${domain%.*}
+
+    local portti=$(grep -P "proxy_pass http://$domain:\d{4};" $nginx_conf)
+    portti=${portti##*:}
+    portti=${portti%;}
+
+    if [[ -z $portti ]]; then
+	echo "Portti on tyhjä merkkijono!"
+    else 
+	echo "$portti" >> $portit
+    fi
+}
+
 while getopts "h" flag; do
     case "${flag}" in
         h) echo "Käyttö: poista-domain domain1 domain2 ..." 
@@ -16,6 +33,7 @@ done
 
 data=/www-data/
 log=/var/log/lateoy.fi/
+portit=/home/lauri/nginx/porttinumerot.txt
 
 for domain in "$@"; do
 	if [[ -z "$domain" ]]; then
@@ -29,6 +47,8 @@ for domain in "$@"; do
 		echo "Domainia $domain ei ole olemassa, ohitetaan"
 		continue
 	fi
+
+	laitaPorttiTakaisin $portit $nginx_conf
 
 	rm -r "$data/$domain"
 	rm -r "$log/$domain"
