@@ -79,6 +79,10 @@ chown lauri:lauri "$nginx_conf"
 
 echo "Luotiin $nginx_conf"
 
-podman exec nginx nginx -s reload
+if podman exec nginx nginx -t; then
+	podman exec nginx nginx -s reload
+	echo "Ladattiin uusi nginx-konfiguraatio. $domain täytyy vielä lisätä Linoden A/AAAA rekisteriin."
+else
+	echo "Nginx-konfiguraatio on virheellinen!"
+fi
 
-echo "Ladattiin uusi nginx-konfiguraatio. $domain täytyy vielä lisätä Linoden A/AAAA rekisteriin."
