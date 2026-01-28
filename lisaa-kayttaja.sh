@@ -33,3 +33,4 @@ touch "$home/.ssh/authorized_keys"
 chown "$kayttaja:$kayttaja" "$home/.ssh" -R
 
 echo "Luotiin kansio .ssh käyttäjälle $kayttaja"
+echo "Muista asettaa käyttäjälle $kayttaja vielä salasana! (sudo passwd $kayttaja)"
