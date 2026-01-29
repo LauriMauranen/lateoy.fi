@@ -77,7 +77,7 @@ echo "Luotiin $nginx_conf"
 
 if podman exec nginx nginx -t; then
 	podman exec nginx nginx -s reload
-	echo "Ladattiin uusi nginx-konfiguraatio. $domain täytyy vielä lisätä Linoden A/AAAA rekisteriin."
+	echo "Ladattiin uusi nginx-konfiguraatio. https://$domain toimii nyt."
 else
-	echo "Nginx-konfiguraatio on virheellinen!"
+	echo "Nginx-konfiguraatio palautti virheen! Tarkista että domainilla on ssl-sertifikaatti ja että domain on lisätty Linoden A/AAAA rekisteriin."
 fi

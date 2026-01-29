@@ -23,7 +23,7 @@ while getopts "h" flag; do
     case "${flag}" in
         h) echo "Käyttö: poista-domain domain1 domain2 ..." 
 	   echo
-	   echo "Poistaa domainin nginx-konfiguraation, lokitus-kansion, www-data -kansion ja ajaa 'nginx -s reload'."
+	   echo "Poistaa domainin nginx-konfiguraation ja siihen liittyvät kansiot ja ajaa 'nginx -s reload'."
 	   echo
 	   echo "  -h            Tulosta tämä viesti."	
 	   exit 0
