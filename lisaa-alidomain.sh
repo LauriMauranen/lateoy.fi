@@ -24,12 +24,7 @@ seuraavaPortti() {
     echo $portti
 }
 
-kayttaja="$1"
-domain="$2"
-record="$3"
 backend_portti=
-on_alidomain=0
-
 while getopts "hp:" flag; do
     case "${flag}" in
         h) echo "Käyttö: lisaa-a-record kayttaja domain record" 
@@ -39,10 +34,17 @@ while getopts "hp:" flag; do
 	   echo "  -h            Tulosta tämä viesti."	
 	   exit 0
 		;;
-	p) backend_portti="$OPTARG" ;;
+	p) backend_portti="$OPTARG" 
+	   exit 0
+		;;
     esac
 done
 
+kayttaja="$1"
+domain="$2"
+record="$3"
+
+on_alidomain=0
 [[ $domain != $record ]] && on_alidomain=1
 
 # kansiot
@@ -60,7 +62,7 @@ chown "$kayttaja:$kayttaja" "$data" "$log" -R
 koko_domain=$record
 [[ $on_alidomain == 1 ]] && koko_domain="$record.$domain"
 
-nginx_conf="/home/lauri/nginx/conf.d/$conf_nimi.conf"
+nginx_conf="/home/lauri/nginx/conf.d/$koko_domain.conf"
 nginx_template=/home/lauri/lateoy.fi/conf.d/user-template
 portit=/home/lauri/nginx/porttinumerot.txt
 
@@ -83,7 +85,7 @@ cli_token=$(cat /home/lauri/.secrets/linode/cli.token)
 ip=172.234.123.168 
 email=lauri.mauranen@gmail.com
 
-domain_id=$(podman compose run --rm -e LINODE_CLI_TOKEN=$CLI_TOKEN linode-cli \
+domain_id=$(podman compose run --rm -e LINODE_CLI_TOKEN=$cli_token linode-cli \
     domains ls | grep $domain)
 
 if [[ $domain_id =~ [0-9]+ ]]; then
@@ -93,7 +95,7 @@ else
     exit 1
 fi
 
-podman compose run --rm -e LINODE_CLI_TOKEN=$CLI_TOKEN linode-cli \
+podman compose run --rm -e LINODE_CLI_TOKEN=$cli_token linode-cli \
     domains records-create --name $record --type A --target $ip $domain_id
 
 # päivitetään nginx

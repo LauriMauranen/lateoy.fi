@@ -3,9 +3,7 @@
 set -euo pipefail
 shopt -s extglob
 
-kayttaja="$1"
-domain="$2"
-alidomain=
+record=0
 
 while getopts "hr" flag; do
     case "${flag}" in
@@ -17,9 +15,14 @@ while getopts "hr" flag; do
 	   echo "  -r            Luo domainille myös A/AAAA record."	
 	   exit 0
 		;;
-	r) alidomain=1
+	r) record=1
+	   exit 0
+		;;
     esac
 done
+
+kayttaja="$1"
+domain="$2"
 
 log="/var/log/$domain"
 
@@ -30,6 +33,6 @@ cli_token=$(cat /home/lauri/.secrets/linode/cli.token)
 email=lauri.mauranen@gmail.com
 
 podman compose run --rm -e LINODE_CLI_TOKEN=$cli_token linode-cli \
-    domains create --name $domain --type master --soa_email $email
+    domains create --domain $domain --type master --soa_email $email
 
-[[ $alidomain == 1 ]] && lisaa-alidomain $kayttaja $domain $domain
+[[ $record == 1 ]] && lisaa-alidomain $kayttaja $domain $domain
