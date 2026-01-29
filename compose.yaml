@@ -11,3 +11,7 @@ services:
       - /home/lauri/nginx/conf.d/:/etc/nginx/conf.d/:ro
       - /var/log/:/var/log/
       - /www-data/:/www-data/:ro
+
+  linode-cli:
+    image: "docker.io/linode/cli:5.65.0"
+    container_name: linode-cli
