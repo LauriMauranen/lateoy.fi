@@ -3,21 +3,23 @@
 set -euo pipefail
 shopt -s extglob
 
+kayttaja="$1"
+domain="$2"
+alidomain=
+
 while getopts "hr" flag; do
     case "${flag}" in
         h) echo "Käyttö: lisaa-domain kayttaja domain" 
 	   echo
-	   echo "Lisää käyttäjälle domainin ja sille tarvittavat kansiot."
+	   echo "Lisää käyttäjälle domainin Linodeen ja lokitus-kansion."
 	   echo
 	   echo "  -h            Tulosta tämä viesti."	
 	   echo "  -r            Luo domainille myös A/AAAA record."	
 	   exit 0
 		;;
+	r) alidomain=1
     esac
 done
-
-kayttaja="$1"
-domain="$2"
 
 log="/var/log/$domain"
 
@@ -29,3 +31,5 @@ email=lauri.mauranen@gmail.com
 
 podman compose run --rm -e LINODE_CLI_TOKEN=$cli_token linode-cli \
     domains create --name $domain --type master --soa_email $email
+
+[[ $alidomain == 1 ]] && lisaa-alidomain $kayttaja $domain $domain
