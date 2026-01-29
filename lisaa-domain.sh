@@ -3,16 +3,6 @@
 set -euo pipefail
 shopt -s extglob
 
-luoKansio() {
-	kansio=${1//+(\/)/\/}
-	kayttaja="$2"
-
-	mkdir -p "$kansio"
-	chown "$kayttaja:$kayttaja" "$kansio"
-
-	echo "Luotiin kansio $kansio käyttäjälle $kayttaja"
-}
-
 seuraavaPortti() {
     tiedosto="$1"
     local portti=
@@ -38,7 +28,7 @@ while getopts "h" flag; do
     case "${flag}" in
         h) echo "Käyttö: lisaa-domain kayttaja domain" 
 	   echo
-	   echo "Lisää domainille nginx-konfiguraation, lokitus-kansion, www-data -kansion ja ajaa 'nginx -s reload'."
+	   echo "Lisää käyttäjälle domainin ja sille nginx-konfiguraation ja tarvittavat kansiot ja päivittää nginx-kontin."
 	   echo
 	   echo "  -h            Tulosta tämä viesti."	
 	   exit 0
@@ -49,8 +39,22 @@ done
 kayttaja="$1"
 domain="$2"
 
+# kansiot
+
 data="/www-data/$domain"
 log="/var/log/lateoy.fi/$domain"
+
+mkdir -p "$data"
+mkdir -p "$log/nginx"
+
+echo "Terve $kayttaja!" > "$data/index.html"
+
+chown "$kayttaja:$kayttaja" "$data" "$log" -R
+
+echo "Luotiin kansiot $data ja $log"
+
+# nginx-konfiguraatio
+
 nginx_conf="/home/lauri/nginx/conf.d/$domain.conf"
 nginx_template=/home/lauri/lateoy.fi/conf.d/user-template
 portit=/home/lauri/nginx/porttinumerot.txt
@@ -59,15 +63,7 @@ backend_portti=$(seuraavaPortti $portit)
 [[ -z $backend_portti ]] && exit 1
 
 cert_domain="$domain"
-[[ "$cert_domain" =~ lateoy\.fi ]] && cert_domain=lateoy.fi
-
-luoKansio "$data" "$kayttaja" 
-luoKansio "$log" "$kayttaja" 
-
-mkdir "$log/nginx"
-chown "$kayttaja:$kayttaja" "$log" -R
-
-echo "Terve $kayttaja!" > "$data/index.html"
+[[ "$cert_domain" =~ lateoy\.fi$ ]] && cert_domain=lateoy.fi
 
 sed_1="s/{{ domain }}/$domain/g"
 sed_2="s/{{ cert-domain }}/$cert_domain/g"
@@ -85,4 +81,3 @@ if podman exec nginx nginx -t; then
 else
 	echo "Nginx-konfiguraatio on virheellinen!"
 fi
-
