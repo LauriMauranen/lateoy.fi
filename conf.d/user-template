@@ -1,23 +1,23 @@
 server {
         listen 80;
 
-	server_name {{ domain }};
+	server_name {{ koko-domain }};
 
-	return 301 https://{{ domain }}$request_uri;
+	return 301 https://{{ koko-domain }}$request_uri;
 }
 
 server {
         listen 443 ssl;
 
-	server_name {{ domain }};
+	server_name {{ koko-domain }};
 
-	ssl_certificate     /etc/letsencrypt/live/{{ cert-domain }}/fullchain.pem;
-	ssl_certificate_key /etc/letsencrypt/live/{{ cert-domain }}/privkey.pem;
+	ssl_certificate     /etc/letsencrypt/live/{{ domain }}/fullchain.pem;
+	ssl_certificate_key /etc/letsencrypt/live/{{ domain }}/privkey.pem;
 
-        error_log /var/log/lateoy.fi/{{ domain }}/nginx/error.log;
-        access_log /var/log/lateoy.fi/{{ domain }}/nginx/access.log;
+        error_log /var/log/{{ domain }}/{{ koko-domain }}/nginx/error.log;
+        access_log /var/log/{{ domain }}/{{ koko-domain }}/nginx/access.log;
 
-	root /www-data/{{ domain }};
+	root /www-data/{{ koko-domain }};
 
 	# ota pois kun asiat toimii
 	add_header Cache-Control 'no-store';
@@ -31,7 +31,7 @@ server {
         }
 
         location @backend {
-                proxy_pass http://{{ domain }}:{{ backend-port }};
+                proxy_pass http://{{ koko-domain }}:{{ backend-port }};
                 proxy_set_header Host              $host;
                 proxy_set_header X-Forwarded-For   $proxy_add_x_forwarded_for;
                 proxy_set_header X-Real-IP         $remote_addr;

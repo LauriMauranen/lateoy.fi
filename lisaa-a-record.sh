@@ -25,7 +25,7 @@ seuraavaPortti() {
 }
 
 backend_portti=
-while getopts "hp:" flag; do
+while getopts "h" flag; do
     case "${flag}" in
         h) echo "Käyttö: lisaa-a-record kayttaja domain record" 
 	   echo
@@ -34,9 +34,8 @@ while getopts "hp:" flag; do
 	   echo "  -h            Tulosta tämä viesti."	
 	   exit 0
 		;;
-	p) backend_portti="$OPTARG" 
-	   exit 0
-		;;
+	# p) backend_portti="$OPTARG" 
+		# ;;
     esac
 done
 
@@ -44,13 +43,13 @@ kayttaja="$1"
 domain="$2"
 record="$3"
 
-on_alidomain=0
-[[ $domain != $record ]] && on_alidomain=1
+koko_domain=$record
+[[ $domain != $record ]] && koko_domain="$record.$domain"
 
 # kansiot
 
-data="/www-data/$domain"
-log="/var/log/$domain/$record"
+data="/www-data/$koko_domain"
+log="/var/log/$domain/$koko_domain"
 
 mkdir -p -v "$data" "$log/nginx"
 echo "Terve $kayttaja!" > "$data/index.html"
@@ -59,9 +58,6 @@ chown "$kayttaja:$kayttaja" "$data" "$log" -R
 
 # nginx-konfiguraatio
 
-koko_domain=$record
-[[ $on_alidomain == 1 ]] && koko_domain="$record.$domain"
-
 nginx_conf="/home/lauri/nginx/conf.d/$koko_domain.conf"
 nginx_template=/home/lauri/lateoy.fi/conf.d/user-template
 portit=/home/lauri/nginx/porttinumerot.txt
@@ -69,8 +65,8 @@ portit=/home/lauri/nginx/porttinumerot.txt
 [[ -z $backend_portti ]] && backend_portti=$(seuraavaPortti $portit)
 [[ -z $backend_portti ]] && exit 1
 
-sed_1="s/{{ domain }}/$koko_domain/g"
-sed_2="s/{{ cert-domain }}/$domain/g"
+sed_1="s/{{ domain }}/$domain/g"
+sed_2="s/{{ koko-domain }}/$koko_domain/g"
 sed_3="s/{{ backend-port }}/$backend_portti/g"
 
 sed -e "$sed_1" -e "$sed_2" -e "$sed_3" "$nginx_template" > "$nginx_conf"
@@ -100,13 +96,13 @@ podman compose run --rm -e LINODE_CLI_TOKEN=$cli_token linode-cli \
 
 # päivitetään nginx
 
-if podman exec nginx nginx -t; then
-	podman exec nginx nginx -s reload
-	echo "Ladattiin uusi nginx-konfiguraatio. https://$domain toimii nyt."
-else
-	mv "$nginx_conf" "$nginx_conf.error"
+echo "Odotetaan 10 sekuntia..."
+sleep 10
 
-	echo "Nginx-konfiguraatio palautti virheen! Mahdollisia syitä:"
-	echo " - A-record ei ole ehtinyt päivittyä Linodeen"
-	echo " - Domainilta puuttuu ssl-sertifikaatti"
+if podman exec nginx nginx -t; then
+    podman exec nginx nginx -s reload
+    echo "Ladattiin uusi nginx-konfiguraatio. https://$koko_domain toimii nyt."
+else
+    mv "$nginx_conf" "$nginx_conf.error"
+    echo "Nginx-konfiguraatio palautti virheen! Löytyykö domainilta ssl-sertifikaatti?"
 fi

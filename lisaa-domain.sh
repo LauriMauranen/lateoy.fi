@@ -16,7 +16,6 @@ while getopts "hr" flag; do
 	   exit 0
 		;;
 	r) record=1
-	   exit 0
 		;;
     esac
 done
