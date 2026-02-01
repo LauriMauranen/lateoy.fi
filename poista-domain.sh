@@ -2,28 +2,11 @@
 
 set -euo pipefail
 
-laitaPorttiTakaisin() {
-    portit="$1"
-    nginx_conf="$2"
-    domain=${nginx_conf##*/}
-    domain=${domain%.*}
-
-    local portti=$(grep -P "proxy_pass http://$domain:\d{4};" $nginx_conf)
-    portti=${portti##*:}
-    portti=${portti%;}
-
-    if [[ -z $portti ]]; then
-	echo "Portti on tyhjä merkkijono!"
-    else 
-	echo "$portti" >> $portit
-    fi
-}
-
 while getopts "h" flag; do
     case "${flag}" in
-        h) echo "Käyttö: poista-domain domain1 domain2 ..." 
+        h) echo "Käyttö: poista-domain domain" 
 	   echo
-	   echo "Poistaa domainin nginx-konfiguraation ja siihen liittyvät kansiot ja ajaa 'nginx -s reload'."
+	   echo "Poistaa domainin ja sen a-recordit"
 	   echo
 	   echo "  -h            Tulosta tämä viesti."	
 	   exit 0
@@ -32,31 +15,27 @@ while getopts "h" flag; do
 done
 
 data=/www-data/
-log=/var/log/lateoy.fi/
-portit=/home/lauri/nginx/porttinumerot.txt
+log="/var/log/$domain"
+recordit=$(ls log)
 
-for domain in "$@"; do
-	if [[ -z "$domain" ]]; then
-		echo "Domain puuttuu, ohitetaan"
-		continue
-	fi
+rm -rf "$log"
 
-	nginx_conf="/home/lauri/nginx/conf.d/$domain.conf"
-
-	if [[ ! -e "$nginx_conf" ]]; then
-		echo "Domainia $domain ei ole olemassa, ohitetaan"
-		continue
-	fi
-
-	laitaPorttiTakaisin $portit $nginx_conf
-
-	rm -r "$data/$domain"
-	rm -r "$log/$domain"
-	rm -r "$nginx_conf"
-
-	echo "Poistettin domainiin $domain liittyvät kansiot ja tiedostot."
+for record in recordit; do
+    poista-a-record $domain $record
 done
 
-podman exec nginx nginx -s reload
+cli_token=$(cat /home/lauri/.secrets/linode/cli.token)
+domain_id=$(podman compose run --rm -e LINODE_CLI_TOKEN=$cli_token linode-cli \
+    domains ls | grep $domain)
 
-echo "Ladattiin uusi nginx-konfiguraatio."
+if [[ $domain_id =~ [0-9]+ ]]; then
+    domain_id="${BASH_REMATCH[0]}"
+else
+    echo "Domainin hakeminen Linodelta epäonnistui"
+    exit 1
+fi
+
+podman compose run --rm -e LINODE_CLI_TOKEN=$cli_token linode-cli \
+    domains rm $domain_id
+
+podman exec nginx nginx -s reload
