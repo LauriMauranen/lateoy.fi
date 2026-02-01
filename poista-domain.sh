@@ -16,7 +16,7 @@ done
 
 data=/www-data/
 log="/var/log/$domain"
-recordit=$(ls log)
+recordit=$([[ -d "$log" ]] && ls "$log")
 
 rm -rf "$log"
 
@@ -25,8 +25,8 @@ for record in recordit; do
 done
 
 cli_token=$(cat /home/lauri/.secrets/linode/cli.token)
-domain_id=$(podman compose run --rm -e LINODE_CLI_TOKEN=$cli_token linode-cli \
-    domains ls | grep $domain)
+domain_id=$(podman compose run --rm -e LINODE_CLI_TOKEN="$cli_token" linode-cli \
+    domains ls | grep "$domain")
 
 if [[ $domain_id =~ [0-9]+ ]]; then
     domain_id="${BASH_REMATCH[0]}"
