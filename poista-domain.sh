@@ -17,14 +17,10 @@ done
 data=/www-data/
 log="/var/log/$domain"
 
-# recordit=
-# [[ -d "$log" ]] && recordit=$(ls "$log")
+recordit=
+[[ -d "$log" ]] && recordit=$(ls "$log")
 
 rm -rf "$log"
-
-# for record in "$recordit"; do
-#     poista-a-record "$domain" "${record%.*}"
-# done
 
 cli_token=$(cat /home/lauri/.secrets/linode/cli.token)
 domain_id=$(podman compose run --rm -e LINODE_CLI_TOKEN="$cli_token" linode-cli \
@@ -36,6 +32,10 @@ else
     echo "Domainin hakeminen Linodelta epäonnistui"
     exit 1
 fi
+
+for record in "$recordit"; do
+    poista-a-record "$domain_id" "$domain" "$record"
+done
 
 podman compose run --rm -e LINODE_CLI_TOKEN=$cli_token linode-cli \
     domains rm "$domain_id"

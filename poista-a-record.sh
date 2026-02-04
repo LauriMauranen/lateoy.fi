@@ -8,7 +8,7 @@ laitaPorttiTakaisin() {
     domain=${nginx_conf##*/}
     domain=${domain%.*}
 
-    local portti=$(grep -P "proxy_pass http://$domain:\d{4};" $nginx_conf)
+    local portti=$(grep -P "proxy_pass http://$domain:\d{4};" $nginx_conf || :)
     portti=${portti##*:}
     portti=${portti%;}
 
@@ -21,9 +21,9 @@ laitaPorttiTakaisin() {
 
 while getopts "h" flag; do
     case "${flag}" in
-        h) echo "Käyttö: poista-domain domain1 domain2 ..." 
+        h) echo "Käyttö: poista-a-record domain domain-id a-record" 
 	   echo
-	   echo "Poistaa domainin nginx-konfiguraation ja siihen liittyvät kansiot ja ajaa 'nginx -s reload'."
+	   echo "Poistaa a-recordin Linodesta ja siihen liittyvät kansiot."
 	   echo
 	   echo "  -h            Tulosta tämä viesti."	
 	   exit 0
@@ -31,32 +31,35 @@ while getopts "h" flag; do
     esac
 done
 
-data=/www-data/
-log=/var/log/lateoy.fi/
+domain="$1"
+domain_id="$2"
+record="$3"
+
+if [[ "$domain_id" =~ [a-zA-Z] ]]; then
+    echo "'domain-id' pitää olla kokonaisluku! ($domain_id)"
+    exit 1
+fi
+
+data="/www-data/$record"
+log="/var/log/$domain/$record"
 portit=/home/lauri/nginx/porttinumerot.txt
 
-for domain in "$@"; do
-	if [[ -z "$domain" ]]; then
-		echo "Domain puuttuu, ohitetaan"
-		continue
-	fi
+nginx_conf="/home/lauri/nginx/conf.d/$record.conf"
+[[ ! -e "$nginx_conf" ]] && nginx_conf="$nginx_conf.error"
 
-	nginx_conf="/home/lauri/nginx/conf.d/$domain.conf"
+[[ -e "$nginx_conf" ]] && laitaPorttiTakaisin $portit $nginx_conf
 
-	if [[ ! -e "$nginx_conf" ]]; then
-		echo "Domainia $domain ei ole olemassa, ohitetaan"
-		continue
-	fi
+rm -rf "$data/$record"
+rm -rf "$log/$domain/$record"
+rm -rf "$nginx_conf"
+rm -rf "$nginx_conf"
 
-	laitaPorttiTakaisin $portit $nginx_conf
+[[ "$record" =~ "$domain" && "$record" != "$domain" ]] \
+    && record="${record%.*}"
 
-	rm -r "$data/$domain"
-	rm -r "$log/$domain"
-	rm -r "$nginx_conf"
+cli_token=$(cat /home/lauri/.secrets/linode/cli.token)
 
-	echo "Poistettin domainiin $domain liittyvät kansiot ja tiedostot."
-done
+podman compose run --rm -e LINODE_CLI_TOKEN="$cli_token" linode-cli \
+    domains records-delete "$domain_id" "$record"
 
 podman exec nginx nginx -s reload
-
-echo "Ladattiin uusi nginx-konfiguraatio."
