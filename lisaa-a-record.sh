@@ -82,7 +82,7 @@ ip=172.234.123.168
 email=lauri.mauranen@gmail.com
 
 domain_id=$(podman compose run --rm -e LINODE_CLI_TOKEN=$cli_token linode-cli \
-    domains ls | grep $domain)
+    domains ls | grep "\s$domain\s" || :)
 
 if [[ $domain_id =~ [0-9]+ ]]; then
     domain_id="${BASH_REMATCH[0]}"
