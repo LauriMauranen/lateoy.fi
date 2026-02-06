@@ -71,6 +71,7 @@ else
 fi
 
 if [[ "$record_id" =~ [0-9]+ ]]; then
+    record_id="${BASH_REMATCH[0]}"
     podman compose run --rm -e LINODE_CLI_TOKEN="$cli_token" linode-cli \
 	domains records-delete "$domain_id" "$record_id"
 else
