@@ -51,10 +51,9 @@ nginx_conf="/home/lauri/nginx/conf.d/$record.conf"
 
 [[ -e "$nginx_conf" ]] && laitaPorttiTakaisin $portit $nginx_conf
 
-rm -rf "$data/$record"
-rm -rf "$log/$domain/$record"
-rm -rf "$nginx_conf"
-rm -rf "$nginx_conf"
+rm -rfv "$data"
+rm -rfv "$log"
+rm -rfv "$nginx_conf"
 
 [[ "$record_on_domain" == false ]] && record="${record%%.*}"
 
