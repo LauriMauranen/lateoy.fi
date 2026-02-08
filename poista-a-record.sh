@@ -56,7 +56,7 @@ rm -rf "$log/$domain/$record"
 rm -rf "$nginx_conf"
 rm -rf "$nginx_conf"
 
-[[ "$record_on_domain" == false ]] && record="${record%.*}"
+[[ "$record_on_domain" == false ]] && record="${record%%.*}"
 
 cli_token=$(cat /home/lauri/.secrets/linode/cli.token)
 domain_id=$(podman compose run --rm -e LINODE_CLI_TOKEN=$cli_token linode-cli \
