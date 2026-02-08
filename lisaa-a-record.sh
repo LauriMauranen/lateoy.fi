@@ -24,7 +24,13 @@ seuraavaPortti() {
     echo $portti
 }
 
+domains_komento() {
+    podman compose run --rm -e LINODE_CLI_TOKEN=$cli_token linode-cli domains \
+	--text "$@"
+}
+
 backend_portti=
+
 while getopts "h" flag; do
     case "${flag}" in
         h) echo "Käyttö: lisaa-a-record kayttaja domain record" 
@@ -81,8 +87,7 @@ cli_token=$(cat /home/lauri/.secrets/linode/cli.token)
 ip=172.234.123.168 
 email=lauri.mauranen@gmail.com
 
-domain_id=$(podman compose run --rm -e LINODE_CLI_TOKEN=$cli_token linode-cli \
-    domains ls | grep "\s$domain\s" || :)
+domain_id=$(domains_komento ls | grep "\s$domain\s" || :)
 
 if [[ $domain_id =~ [0-9]+ ]]; then
     domain_id="${BASH_REMATCH[0]}"
@@ -91,8 +96,7 @@ else
     exit 1
 fi
 
-podman compose run --rm -e LINODE_CLI_TOKEN=$cli_token linode-cli \
-    domains records-create --name $record --type A --target $ip $domain_id
+domains_komento records-create --name "$record" --type A --target "$ip" "$domain_id"
 
 # päivitetään nginx
 

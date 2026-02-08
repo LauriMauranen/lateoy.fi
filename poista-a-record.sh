@@ -2,7 +2,7 @@
 
 set -euo pipefail
 
-laitaPorttiTakaisin() {
+laita_portti_takaisin() {
     local portit="$1"
     local nginx_conf="$2"
     local record=${nginx_conf##*/}
@@ -17,6 +17,11 @@ laitaPorttiTakaisin() {
     else 
 	echo "$portti" >> $portit
     fi
+}
+
+domains_komento() {
+    podman compose run --rm -e LINODE_CLI_TOKEN=$cli_token linode-cli domains \
+	--text "$@"
 }
 
 while getopts "h" flag; do
@@ -49,7 +54,7 @@ portit=/home/lauri/nginx/porttinumerot.txt
 nginx_conf="/home/lauri/nginx/conf.d/$record.conf"
 [[ ! -e "$nginx_conf" ]] && nginx_conf="$nginx_conf.error"
 
-[[ -e "$nginx_conf" ]] && laitaPorttiTakaisin $portit $nginx_conf
+[[ -e "$nginx_conf" ]] && laita_portti_takaisin $portit $nginx_conf
 
 rm -rfv "$data"
 rm -rfv "$log"
@@ -58,8 +63,8 @@ rm -rfv "$nginx_conf"
 [[ "$record_on_domain" == false ]] && record="${record%%.*}"
 
 cli_token=$(cat /home/lauri/.secrets/linode/cli.token)
-domain_id=$(podman compose run --rm -e LINODE_CLI_TOKEN=$cli_token linode-cli \
-    domains ls | grep "\s$domain\s" || :)
+
+domain_id=$(domains_komento ls | grep "\s$domain\s" || :)
 
 record_id=
 
@@ -67,11 +72,9 @@ if [[ "$domain_id" =~ [0-9]+ ]]; then
     domain_id="${BASH_REMATCH[0]}"
 
     if "$record_on_domain"; then
-	record_id=$(podman compose run --rm -e LINODE_CLI_TOKEN=$cli_token linode-cli \
-	    domains records-list "$domain_id" | grep "A\s*172" || :)
+	record_id=$(domains_komento records-list "$domain_id" | grep "A\s*172" || :)
     else
-	record_id=$(podman compose run --rm -e LINODE_CLI_TOKEN=$cli_token linode-cli \
-	    domains records-list "$domain_id" | grep -e "\s$record\s" || :)
+	record_id=$(domains_komento records-list "$domain_id" | grep -e "\s$record\s" || :)
     fi
 else
     echo "Domainin hakeminen Linodelta epäonnistui"
@@ -79,8 +82,7 @@ fi
 
 if [[ "$record_id" =~ [0-9]+ ]]; then
     record_id="${BASH_REMATCH[0]}"
-    podman compose run --rm -e LINODE_CLI_TOKEN="$cli_token" linode-cli \
-	domains records-delete "$domain_id" "$record_id"
+    domains_komento records-delete "$domain_id" "$record_id"
 else
     echo "Recordin hakeminen Linodelta epäonnistui"
 fi
