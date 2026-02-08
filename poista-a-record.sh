@@ -5,10 +5,10 @@ set -euo pipefail
 laitaPorttiTakaisin() {
     local portit="$1"
     local nginx_conf="$2"
-    local domain=${nginx_conf##*/}
-    local domain=${domain%.*}
+    local record=${nginx_conf##*/}
+    local record=${record%.*}
 
-    local portti=$(grep -P "proxy_pass http://$domain:\d{4};" $nginx_conf || :)
+    local portti=$(grep -P "proxy_pass http://$record:\d{4};" $nginx_conf || :)
     local portti=${portti##*:}
     local portti=${portti%;}
 
@@ -34,8 +34,11 @@ done
 domain="$1"
 record="$2"
 
+record_on_domain=false
+[[ "$record" == "$domain" ]] && record_on_domain=true
+
 if [[ ! "$record" =~ "$domain" ]]; then
-    echo "Anna record muodossa (record.)domain"
+    echo "Recordin pitää sisältää domain!"
     exit 1
 fi
 
@@ -53,7 +56,7 @@ rm -rf "$log/$domain/$record"
 rm -rf "$nginx_conf"
 rm -rf "$nginx_conf"
 
-[[ "$record" != "$domain" ]] && record="${record%.*}"
+[[ "$record_on_domain" == false ]] && record="${record%.*}"
 
 cli_token=$(cat /home/lauri/.secrets/linode/cli.token)
 domain_id=$(podman compose run --rm -e LINODE_CLI_TOKEN=$cli_token linode-cli \
@@ -63,11 +66,16 @@ record_id=
 
 if [[ "$domain_id" =~ [0-9]+ ]]; then
     domain_id="${BASH_REMATCH[0]}"
-    record_id=$(podman compose run --rm -e LINODE_CLI_TOKEN=$cli_token linode-cli \
-	domains records-list "$domain_id" | grep "\s$record\s" || :)
+
+    if "$record_on_domain"; then
+	record_id=$(podman compose run --rm -e LINODE_CLI_TOKEN=$cli_token linode-cli \
+	    domains records-list "$domain_id" | grep "A\s*172" || :)
+    else
+	record_id=$(podman compose run --rm -e LINODE_CLI_TOKEN=$cli_token linode-cli \
+	    domains records-list "$domain_id" | grep -e "\s$record\s" || :)
+    fi
 else
     echo "Domainin hakeminen Linodelta epäonnistui"
-    exit 1
 fi
 
 if [[ "$record_id" =~ [0-9]+ ]]; then
