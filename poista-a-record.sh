@@ -40,27 +40,28 @@ domain="$1"
 record="$2"
 
 record_on_domain=false
-[[ "$record" == "$domain" ]] && record_on_domain=true
+koko_domain="$domain"
 
-if [[ ! "$record" =~ "$domain" ]]; then
-    echo "Recordin pitää sisältää domain!"
+if [[ "$record" == "$domain" ]]; then
+    record_on_domain=true
+elif [[ "$record" =~ ^[a-zA-Z0-9_-]+$ ]]; then
+    koko_domain="$record.$domain"
+else
+    "Record on epäkelpo!"
     exit 1
 fi
 
-data="/www-data/$record"
-log="/var/log/$domain/$record"
+data="/www-data/$koko_domain"
+log="/var/log/$domain/$koko_domain"
 portit=/home/lauri/nginx/porttinumerot.txt
 
-nginx_conf="/home/lauri/nginx/conf.d/$record.conf"
+nginx_conf="/home/lauri/nginx/conf.d/$koko_domain.conf"
 [[ ! -e "$nginx_conf" ]] && nginx_conf="$nginx_conf.error"
-
 [[ -e "$nginx_conf" ]] && laita_portti_takaisin $portit $nginx_conf
 
 rm -rfv "$data"
 rm -rfv "$log"
 rm -rfv "$nginx_conf"
-
-[[ "$record_on_domain" == false ]] && record="${record%%.*}"
 
 cli_token=$(cat /home/lauri/.secrets/linode/cli.token)
 

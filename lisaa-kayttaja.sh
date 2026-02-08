@@ -1,9 +1,6 @@
 #!/bin/bash
 
 set -euo pipefail
-shopt -s extglob
-
-kayttaja="$1"
 
 while getopts "h" flag; do
     case "${flag}" in
@@ -17,10 +14,7 @@ while getopts "h" flag; do
     esac
 done
 
-if [[ $(grep -c ^$kayttaja: /etc/passwd) > 0 ]]; then
-	echo "Käyttäjä $kayttaja on jo olemassa"
-	exit 1
-fi
+kayttaja="$1"
 
 useradd -s /bin/bash -U -m -G users "$kayttaja" || exit 1
 
@@ -28,9 +22,9 @@ echo "Luotiin käyttäjä $kayttaja"
 
 home="/home/$kayttaja/"
 
-mkdir "$home/.ssh"
+mkdir -v "$home/.ssh"
 touch "$home/.ssh/authorized_keys"
+
 chown "$kayttaja:$kayttaja" "$home/.ssh" -R
 
-echo "Luotiin kansio .ssh käyttäjälle $kayttaja"
 echo "Muista asettaa käyttäjälle $kayttaja vielä salasana! (sudo passwd $kayttaja)"

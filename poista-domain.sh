@@ -2,6 +2,11 @@
 
 set -euo pipefail
 
+domains_komento() {
+    podman compose run --rm -e LINODE_CLI_TOKEN=$cli_token linode-cli domains \
+	--text "$@"
+}
+
 while getopts "h" flag; do
     case "${flag}" in
         h) echo "Käyttö: poista-domain domain" 
@@ -14,6 +19,8 @@ while getopts "h" flag; do
     esac
 done
 
+domain="$1"
+
 data=/www-data/
 log="/var/log/$domain"
 
@@ -23,8 +30,8 @@ recordit=
 rm -rf "$log"
 
 cli_token=$(cat /home/lauri/.secrets/linode/cli.token)
-domain_id=$(podman compose run --rm -e LINODE_CLI_TOKEN="$cli_token" linode-cli \
-    --text domains ls | grep "\s$domain\s" || :)
+
+domain_id=$(domains_komento ls | grep "\s$domain\s" || :)
 
 if [[ $domain_id =~ [0-9]+ ]]; then
     domain_id="${BASH_REMATCH[0]}"
@@ -34,10 +41,13 @@ else
 fi
 
 for record in "$recordit"; do
-    poista-a-record "$domain_id" "$domain" "$record"
+    if [[ "$domain" == "$record" ]]; then
+	poista-a-record "$domain" "$record"
+    else
+	poista-a-record "$domain" "${record%%.*}"
+    fi
 done
 
-podman compose run --rm -e LINODE_CLI_TOKEN=$cli_token linode-cli \
-    domains rm "$domain_id"
+domains_komento rm "$domain_id"
 
 podman exec nginx nginx -s reload

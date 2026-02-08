@@ -1,7 +1,6 @@
 #!/bin/bash
 
 set -euo pipefail
-shopt -s extglob
 
 domains_komento() {
     podman compose run --rm -e LINODE_CLI_TOKEN=$cli_token linode-cli domains \

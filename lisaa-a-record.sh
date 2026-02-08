@@ -1,7 +1,6 @@
 #!/bin/bash
 
 set -euo pipefail
-shopt -s extglob
 
 seuraavaPortti() {
     local tiedosto="$1"
@@ -49,8 +48,14 @@ kayttaja="$1"
 domain="$2"
 record="$3"
 
-koko_domain=$record
-[[ $domain != $record ]] && koko_domain="$record.$domain"
+if [[ "$record" == "$domain" ]]; then
+    koko_domain="$domain"
+elif [[ "$domain" =~ ^[a-zA-Z0-9_-]+$ ]]; then
+    koko_domain="$record.$domain"
+else
+    "Record on epäkelpo!"
+    exit 1
+fi
 
 # kansiot
 
