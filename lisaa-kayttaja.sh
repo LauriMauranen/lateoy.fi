@@ -18,8 +18,6 @@ kayttaja="$1"
 
 useradd -s /bin/bash -U -m -G users "$kayttaja" || exit 1
 
-echo "Luotiin käyttäjä $kayttaja"
-
 home="/home/$kayttaja/"
 
 mkdir -v "$home/.ssh"

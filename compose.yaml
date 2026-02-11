@@ -15,3 +15,8 @@ services:
   linode-cli:
     image: "docker.io/linode/cli:5.65.0"
     container_name: linode-cli
+
+  testit:
+    image: "docker.io/ubuntu:24.04"
+    container_name: testit
+      - $PWD/:/sovellus/:ro
