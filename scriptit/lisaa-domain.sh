@@ -2,10 +2,7 @@
 
 set -euo pipefail
 
-domains_komento() {
-    podman compose -f "$PODMAN_COMPOSE_LINODE" run --rm \
-	-e LINODE_CLI_TOKEN="$LINODE_CLI_TOKEN" linode-cli domains --text "$@"
-}
+source avustajat.sh
 
 record=false
 
