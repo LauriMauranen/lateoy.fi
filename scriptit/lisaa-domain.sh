@@ -3,8 +3,8 @@
 set -euo pipefail
 
 domains_komento() {
-    podman compose run --rm -e LINODE_CLI_TOKEN=$cli_token linode-cli domains \
-	--text "$@"
+    podman compose -f "$PODMAN_COMPOSE_LINODE" run --rm \
+	-e LINODE_CLI_TOKEN="$LINODE_CLI_TOKEN" linode-cli domains --text "$@"
 }
 
 record=false
@@ -32,7 +32,6 @@ log="/var/log/$domain"
 mkdir -p -v "$log"
 chown "$kayttaja:$kayttaja" "$log" -R
 
-cli_token=$(cat /home/lauri/.secrets/linode/cli.token)
 email=lauri.mauranen@gmail.com
 
 domains_komento create --domain $domain --type master --soa_email $email

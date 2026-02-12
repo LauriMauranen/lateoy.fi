@@ -7,7 +7,7 @@ source avustajat.sh
 # 1
 
 set +e
-if ./lisaa-kayttaja.sh; then
+if lisaa-kayttaja.sh; then
     testi_echo "lisaa-kayttaja.sh vaatii käyttäjän!"
     virheita+=1
 fi
@@ -18,7 +18,7 @@ set -e
 kayttaja=matti
 
 set +e
-if ! ./lisaa-kayttaja.sh "$kayttaja"; then
+if ! lisaa-kayttaja.sh "$kayttaja"; then
     testi_echo "lisaa-kayttaja.sh palautti virheen!"
     virheita+=1
 fi
@@ -33,6 +33,5 @@ if [[ ! -e "$ssh" ]]; then
     virheita+=1
 fi
 
-# siivous
-poista_scriptit_testikansiosta
+
 exit "$virheita"
