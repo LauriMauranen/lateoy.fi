@@ -3,17 +3,17 @@
 set -euo pipefail
 
 declare -A tulokset
-
 declare -i palautus
 
-cd testit
+cd ../testit
 
+set +e
 for testi in ./*testi.sh; do
-    set +e
     ./"$testi"
     tulokset["$testi"]="$?"
     palautus+="$?"
 done
+set -e
 
 echo
 

@@ -16,13 +16,14 @@ done
 
 kayttaja="$1"
 
-useradd -s /bin/bash -U -m -G users "$kayttaja" || exit 1
+# useradd -s /bin/bash -U -m -G users "$kayttaja" || exit 1
+adduser -s /bin/bash -G users -D "$kayttaja" || exit 1
 
 home="/home/$kayttaja/"
 
 mkdir -v "$home/.ssh"
 touch "$home/.ssh/authorized_keys"
 
-chown "$kayttaja:$kayttaja" "$home/.ssh" -R
+chown "$kayttaja" "$home/.ssh" -R
 
 echo "Muista asettaa käyttäjälle $kayttaja vielä salasana! (sudo passwd $kayttaja)"

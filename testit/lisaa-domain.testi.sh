@@ -7,13 +7,11 @@ source avustajat.sh
 # 1
 
 set +e
-if ./lisaa-kayttaja.sh; then
-    testi_echo "lisaa-kayttaja.sh vaatii käyttäjän!"
+if lisaa-domain.sh; then
+    set -e
+    testi_echo "lisaa-domain.sh vaatii käyttäjän ja domainin!"
     virheita+=1
 fi
-set -e
 
 
-# siivous
-poista_scriptit_testikansiosta
 exit "$virheita"

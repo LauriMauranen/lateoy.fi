@@ -8,10 +8,10 @@ source avustajat.sh
 
 set +e
 if lisaa-kayttaja.sh; then
-    testi_echo "lisaa-kayttaja.sh vaatii käyttäjän!"
+    set -e
+    testi_echo "lisaa-kayttaja.sh vaatii käyttäjänimen!"
     virheita+=1
 fi
-set -e
 
 # 2
 
@@ -19,10 +19,10 @@ kayttaja=matti
 
 set +e
 if ! lisaa-kayttaja.sh "$kayttaja"; then
+    set -e
     testi_echo "lisaa-kayttaja.sh palautti virheen!"
     virheita+=1
 fi
-set -e
 
 # 3
 

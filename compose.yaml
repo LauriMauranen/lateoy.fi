@@ -17,11 +17,11 @@ services:
     container_name: linode-cli
 
   testit:
-    image: "docker.io/mgoltzshe/podman:latest"
-    command: bash -c "cd /sovellus && PATH=$PATH:/sovellus/scriptit ./aja-scriptit.sh"
+    image: "docker.io/mgoltzsche/podman:latest"
+    command: sh -c "cd /sovellus/scriptit && ./alusta-ja-aja.sh"
     container_name: testit
     environment:
       - PODMAN_COMPOSE_LINODE=/sovellus/compose.yaml
       - LINODE_CLI_TOKEN=${LINODE_CLI_TOKEN}
     volumes:
-      - $PWD:/sovellus/
+      - /home/lauri/projektit/lateoy.fi/:/sovellus/:ro
