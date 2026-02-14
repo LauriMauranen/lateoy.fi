@@ -1,30 +1,25 @@
 #!/bin/bash
 
-set -euo pipefail
-
-source ../scriptit/avustajat.sh
+source /sovellus/scriptit/avustajat.sh
+set +e
 
 # 1
 
-set +e
 if lisaa-domain.sh; then
     testi_echo "lisaa-domain.sh vaatii käyttäjän ja domainin!"
     virheita+=1
 fi
-set -e
 
 # 2
 
 kayttaja=matti
 domain=masa.com
 
-set +e
-if ! lisaa-kayttaja.sh "$kayttaja" && lisaa-domain.sh "$domain" "$kayttaja"; 
+if ! (lisaa-kayttaja.sh "$kayttaja" && lisaa-domain.sh "$kayttaja" "$domain"); 
 then
     testi_echo "Joko käyttäjän tai domainin lisääminen epäonnistui!"
     virheita+=1
 fi
-set -e
 
 # 3
 
@@ -37,11 +32,14 @@ fi
 
 # 4
 
-log="/var/log/$domain"
-
-if [[ ! -e "$log" ]]; then
-    testi_echo "Kansio $log puuttuu!"
+if ! poista-domain.sh "$domain"; then
+    testi_echo "Domain ei löytynyt Linodesta!"
     virheita+=1
 fi
+
+#siivous
+
+deluser --remove-home "$kayttaja"
+
 
 exit "$virheita"

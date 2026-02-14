@@ -1,7 +1,5 @@
 #!/bin/bash
 
-set -euo pipefail
-
 source avustajat.sh
 
 record=false
@@ -26,8 +24,8 @@ domain="$2"
 
 log="/var/log/$domain"
 
-mkdir -p -v "$log"
-chown "$kayttaja:$kayttaja" "$log" -R
+mkdir -v "$log"
+chown "$kayttaja" "$log" -R
 
 email=lauri.mauranen@gmail.com
 

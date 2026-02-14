@@ -1,0 +1,11 @@
+FROM docker.io/mgoltzsche/podman:latest
+
+RUN apk update
+RUN apk add bash py3-pip
+
+RUN pip3 install podman-compose --break-system-packages
+
+ENV PATH=$PATH:/sovellus/scriptit 
+
+ENTRYPOINT ["aja-testit.sh"]
+CMD ["/sovellus/testit/*"]

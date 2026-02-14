@@ -1,28 +1,23 @@
 #!/bin/bash
 
-set -euo pipefail
-
-source ../scriptit/avustajat.sh
+source /sovellus/scriptit/avustajat.sh
+set +e
 
 # 1
 
-set +e
 if lisaa-kayttaja.sh; then
     testi_echo "lisaa-kayttaja.sh vaatii käyttäjänimen!"
     virheita+=1
 fi
-set -e
 
 # 2
 
 kayttaja=matti
 
-set +e
 if ! lisaa-kayttaja.sh "$kayttaja"; then
     testi_echo "lisaa-kayttaja.sh palautti virheen!"
     virheita+=1
 fi
-set -e
 
 # 3
 
@@ -32,6 +27,11 @@ if [[ ! -e "$ssh" ]]; then
     testi_echo "Tiedosto $ssh puuttuu!"
     virheita+=1
 fi
+
+
+# siivous
+
+deluser --remove-home "$kayttaja"
 
 
 exit "$virheita"

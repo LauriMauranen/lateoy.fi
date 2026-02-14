@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -euo pipefail
+source avustajat.sh
 
 seuraavaPortti() {
     local tiedosto="$1"
@@ -21,11 +21,6 @@ seuraavaPortti() {
     fi
 
     echo $portti
-}
-
-domains_komento() {
-    podman compose run --rm -e LINODE_CLI_TOKEN=$cli_token linode-cli domains \
-	--text "$@"
 }
 
 backend_portti=

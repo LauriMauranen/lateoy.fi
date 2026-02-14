@@ -15,13 +15,26 @@ services:
   linode-cli:
     image: "docker.io/linode/cli:5.65.0"
     container_name: linode-cli
+    environment:
+      - LINODE_CLI_TOKEN=${LINODE_CLI_TOKEN}
 
   testit:
-    image: "docker.io/mgoltzsche/podman:latest"
-    command: sh -c "cd /sovellus/scriptit && ./alusta-ja-aja.sh"
+    build: 
+      dockerfile: ./ContainerfileTestit
     container_name: testit
+    privileged: true
     environment:
-      - PODMAN_COMPOSE_LINODE=/sovellus/compose.yaml
-      - LINODE_CLI_TOKEN=${LINODE_CLI_TOKEN}
+      - COMPOSE_LINODE=/sovellus/compose.yaml
+    secrets:
+      - linode_cli_token
     volumes:
       - /home/lauri/projektit/lateoy.fi/:/sovellus/:ro
+      # ei tarvitse joka kerta ladata linode-cli kuvaa
+      - containers:/var/lib/containers/storage/
+
+secrets:
+  linode_cli_token:
+    file: /home/lauri/.secrets/linode/cli.token
+
+volumes:
+  containers:
