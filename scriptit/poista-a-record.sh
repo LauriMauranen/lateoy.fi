@@ -34,45 +34,23 @@ done
 domain="$1"
 record="$2"
 
-record_on_domain=false
-
 koko_domain=$(tee_koko_domain "$domain" "$record")
 
 data="/www-data/$koko_domain"
 log="/var/log/$domain/$koko_domain"
 portit=/home/lauri/nginx/porttinumerot.txt
 
-nginx_conf="/home/lauri/nginx/conf.d/$koko_domain.conf"
-[[ ! -e "$nginx_conf" ]] && nginx_conf="$nginx_conf.error"
-[[ -e "$nginx_conf" ]] && laita_portti_takaisin $portit $nginx_conf
+# nginx_conf="/home/lauri/nginx/conf.d/$koko_domain.conf"
+# [[ ! -e "$nginx_conf" ]] && nginx_conf="$nginx_conf.error"
+# [[ -e "$nginx_conf" ]] && laita_portti_takaisin $portit $nginx_conf
 
 rm -rfv "$data"
 rm -rfv "$log"
-rm -rfv "$nginx_conf"
+# rm -rfv "$nginx_conf"
 
-cli_token=$(cat /home/lauri/.secrets/linode/cli.token)
+domain_id=$(hae_domain_id_linodesta "$domain")
+record_id=$(hae_record_id_linodesta "$record" "$domain_id")
 
-domain_id=$(domains_komento ls | grep "\s$domain\s" || :)
+domains_komento records-delete "$domain_id" "$record_id"
 
-record_id=
-
-if [[ "$domain_id" =~ [0-9]+ ]]; then
-    domain_id="${BASH_REMATCH[0]}"
-
-    if "$record_on_domain"; then
-	record_id=$(domains_komento records-list "$domain_id" | grep "A\s*172" || :)
-    else
-	record_id=$(domains_komento records-list "$domain_id" | grep -e "\s$record\s" || :)
-    fi
-else
-    echo "Domainin hakeminen Linodelta epäonnistui"
-fi
-
-if [[ "$record_id" =~ [0-9]+ ]]; then
-    record_id="${BASH_REMATCH[0]}"
-    domains_komento records-delete "$domain_id" "$record_id"
-else
-    echo "Recordin hakeminen Linodelta epäonnistui"
-fi
-
-podman exec nginx nginx -s reload
+# podman exec nginx nginx -s reload

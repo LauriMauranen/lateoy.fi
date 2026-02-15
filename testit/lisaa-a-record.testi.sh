@@ -4,16 +4,13 @@ source /sovellus/scriptit/avustajat.sh
 
 kayttaja=matti
 domain=masa.com
+record=terve
 
-# siivous
+# alustus
 
-set +e
-deluser --remove-home "$kayttaja"
-poista-domain.sh "$domain"
+alusta_kayttaja_ja_domain "$kayttaja" "$domain"
+domain_id=$(hae_domain_id_linodesta "$domain")
 
-set -e
-lisaa-kayttaja.sh "$kayttaja"
-lisaa-domain.sh "$kayttaja" "$domain"
 set +e
 
 # 1
@@ -29,19 +26,33 @@ done
 
 # 2
 
-# record1=terve
+if ! lisaa-a-record.sh "$kayttaja" "$domain" "$domain"; then
+    testi_echo "lisaa-a-record palautti virheen!"
+    virheita+=1
+fi
 
-# if ! lisaa-a-record.sh "$kayttaja" "$domain" "$record1"; then
-#     testi_echo "lisaa-a-record palautti virheen!"
-#     virheita+=1
-# fi
+if ! hae_record_id_linodesta "$domain" "$domain_id"; then
+    testi_echo "record $domain ei ole Linodessa!"
+    virheita+=1
+fi
+
+onhan_kansio_olemassa "/www-data/$domain"
+onhan_kansio_olemassa "/var/log/$domain/$domain"
 
 # 3
 
-# 4
+if ! lisaa-a-record.sh "$kayttaja" "$domain" "$record"; then
+    testi_echo "lisaa-a-record palautti virheen!"
+    virheita+=1
+fi
 
-#siivous
+if ! hae_record_id_linodesta "$record" "$domain_id"; then
+    testi_echo "record $record ei ole Linodessa!"
+    virheita+=1
+fi
 
+onhan_kansio_olemassa "/www-data/$record.$domain"
+onhan_kansio_olemassa "/var/log/$domain/$record.$domain"
 
 
 exit "$virheita"

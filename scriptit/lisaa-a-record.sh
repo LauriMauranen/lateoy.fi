@@ -70,7 +70,7 @@ chown "$kayttaja" "$data" "$log" -R
 
 # sed -e "$sed_1" -e "$sed_2" -e "$sed_3" "$nginx_template" > "$nginx_conf"
 
-# chown lauri:lauri "$nginx_conf"
+# chown lauri "$nginx_conf"
 
 # echo "Luotiin $nginx_conf"
 

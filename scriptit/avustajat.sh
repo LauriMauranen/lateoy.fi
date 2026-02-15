@@ -2,19 +2,13 @@
 
 set -euo pipefail
 
-declare -i virheita=0
-
-testi_echo() {
-    echo "${0##*/}: $@" 
-}
-
 tee_koko_domain() {
     domain="$1"
     record="$2"
 
     if [[ "$record" == "$domain" ]]; then
 	koko_domain="$domain"
-    elif [[ "$domain" =~ ^[a-zA-Z0-9_-]+$ ]]; then
+    elif [[ "$record" =~ ^[a-zA-Z0-9_-]+$ ]]; then
 	koko_domain="$record.$domain"
     else
 	echo "Record on epäkelpo!"
@@ -42,20 +36,60 @@ hae_domain_id_linodesta() {
     fi
 }
 
-poista_domain_linodesta() {
-    local domain="$1"
+hae_record_id_linodesta() {
+    local record="$1"
+    local domain_id="$2"
 
-    local domain_id=$(hae_domain_id_linodesta "$domain")
-    echo "hei"
+    gr="\s$record\s"
+    [[ "$domain" == "$record" ]] && gr="A\s*172"
 
-    [[ ! -z "$domain_id" ]] && domains_komento rm "$domain_id"
+    record_id=$(domains_komento records-list "$domain_id" | grep "$gr" || :)
+
+    if [[ "$record_id" =~ [0-9]+ ]]; then
+	echo "${BASH_REMATCH[0]}"
+    else
+	echo "Recordin hakeminen Linodelta epäonnistui"
+	return 1
+    fi
 }
 
-poista_a_record_linodesta() {
-    local domain="$1"
-    local record="$2"
 
-    local domain_id=$(hae_domain_id_linodesta "$domain")
+# testeihin
 
-    [[ ! -z "$domain_id" ]] && domains_komento rm "$domain_id"
+
+declare -i virheita=0
+
+testi_echo() {
+    echo "${0##*/}: $@" 
+}
+
+siivoa_kayttaja_ja_domain() {
+    set +e
+    deluser --remove-home "$1"
+    poista-domain.sh "$2"
+}
+
+alusta_kayttaja_ja_domain() {
+    kayttaja="$1"
+    domain="$2"
+
+    siivoa_kayttaja_ja_domain "$kayttaja" "$domain"
+
+    set -e
+    lisaa-kayttaja.sh "$kayttaja"
+    lisaa-domain.sh "$kayttaja" "$domain" -r
+}
+
+onhan_kansio_olemassa() {
+    if [[ ! -e "$1" ]]; then
+	testi_echo "Kansio $1 puuttuu!"
+	virheita+=1
+    fi
+}
+
+eihan_kansio_ole_olemassa() {
+    if [[ -e "$1" ]]; then
+	testi_echo "Kansio $1 puuttuu!"
+	virheita+=1
+    fi
 }

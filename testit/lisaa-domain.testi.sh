@@ -1,37 +1,28 @@
 #!/bin/bash
 
 source /sovellus/scriptit/avustajat.sh
-set +e
 
 kayttaja=matti
 domain=masa.com
 
-# siivous
+# alustus
 
-deluser --remove-home "$kayttaja"
-poista-domain.sh "$domain"
+siivoa_kayttaja_ja_domain "$kayttaja" "$domain"
+lisaa-kayttaja.sh "$kayttaja" 
+
+set +e
 
 # 1
 
-if ! (lisaa-kayttaja.sh "$kayttaja" && lisaa-domain.sh "$kayttaja" "$domain"); 
-then
-    testi_echo "Joko käyttäjän tai domainin lisääminen epäonnistui!"
+if ! lisaa-domain.sh "$kayttaja" "$domain"; then
+    testi_echo "lisaa-domain.sh palautti virheen!"
     virheita+=1
 fi
 
-# 2
+onhan_kansio_olemassa "/var/log/$domain"
 
-log="/var/log/$domain"
-
-if [[ ! -e "$log" ]]; then
-    testi_echo "Kansio $log puuttuu!"
-    virheita+=1
-fi
-
-# 3
-
-if ! poista-domain.sh "$domain"; then
-    testi_echo "Domain ei löytynyt Linodesta!"
+if ! hae_domain_id_linodesta "$domain"; then
+    testi_echo "Domain $domain ei löydy Linodesta!"
     virheita+=1
 fi
 

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -euo pipefail
+set -uo pipefail
 
 while getopts "h" flag; do
     case "${flag}" in
@@ -27,13 +27,14 @@ else
     testit="$uusi_testit"
 fi
 
-export LINODE_CLI_TOKEN=$(cat /run/secrets/linode_cli_token)
 declare -A tulokset
 declare -i palautus
 
 cd "$kansio"
 
 for testi in $testit; do
+    echo "Ajetaan $testi"
+    echo
     ./"$testi"
     tulokset["$testi"]="$?"
     palautus+="$?"
@@ -43,7 +44,8 @@ echo
 
 for testi in "${!tulokset[@]}"; do
     tulos=Läpi
-    [[ "${tulokset[$testi]}" != 0 ]] && tulos=Virhe
+    n="${tulokset[$testi]}" 
+    [[ "$n" > 0 ]] && tulos="Virheitä $n"
     echo "$tulos | $testi"
 done
 

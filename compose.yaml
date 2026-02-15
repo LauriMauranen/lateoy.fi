@@ -25,16 +25,11 @@ services:
     privileged: true
     environment:
       - COMPOSE_LINODE=/sovellus/compose.yaml
-    secrets:
-      - linode_cli_token
+      - LINODE_CLI_TOKEN=${LINODE_CLI_TOKEN}
     volumes:
       - /home/lauri/projektit/lateoy.fi/:/sovellus/:ro
       # ei tarvitse joka kerta ladata linode-cli kuvaa
       - containers:/var/lib/containers/storage/
-
-secrets:
-  linode_cli_token:
-    file: /home/lauri/.secrets/linode/cli.token
 
 volumes:
   containers:

@@ -11,7 +11,7 @@ while getopts "hr" flag; do
 	   echo "Lisää käyttäjälle domainin Linodeen ja lokitus-kansion."
 	   echo
 	   echo "  -h            Tulosta tämä viesti."	
-	   echo "  -r            Luo domainille myös A/AAAA record."	
+	   echo "  -r            Luo domainille myös A record."	
 	   exit 0
 		;;
 	r) record=true
@@ -29,6 +29,6 @@ chown "$kayttaja" "$log" -R
 
 email=lauri.mauranen@gmail.com
 
-domains_komento create --domain $domain --type master --soa_email $email
+domains_komento create --domain "$domain" --type master --soa_email "$email"
 
-if "$record"; then lisaa-a-record $kayttaja $domain $domain; fi
+if "$record"; then lisaa-a-record.sh $kayttaja $domain $domain; fi
