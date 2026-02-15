@@ -31,4 +31,4 @@ email=lauri.mauranen@gmail.com
 
 domains_komento create --domain $domain --type master --soa_email $email
 
-if "$record"; then lisaa-alidomain $kayttaja $domain $domain; fi
+if "$record"; then lisaa-a-record $kayttaja $domain $domain; fi

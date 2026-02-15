@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -euo pipefail
+source avustajat.sh
 
 laita_portti_takaisin() {
     local portit="$1"
@@ -19,11 +19,6 @@ laita_portti_takaisin() {
     fi
 }
 
-domains_komento() {
-    podman compose run --rm -e LINODE_CLI_TOKEN=$cli_token linode-cli domains \
-	--text "$@"
-}
-
 while getopts "h" flag; do
     case "${flag}" in
         h) echo "Käyttö: poista-a-record domain a-record" 
@@ -40,16 +35,8 @@ domain="$1"
 record="$2"
 
 record_on_domain=false
-koko_domain="$domain"
 
-if [[ "$record" == "$domain" ]]; then
-    record_on_domain=true
-elif [[ "$record" =~ ^[a-zA-Z0-9_-]+$ ]]; then
-    koko_domain="$record.$domain"
-else
-    "Record on epäkelpo!"
-    exit 1
-fi
+koko_domain=$(tee_koko_domain "$domain" "$record")
 
 data="/www-data/$koko_domain"
 log="/var/log/$domain/$koko_domain"

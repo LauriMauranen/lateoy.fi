@@ -23,7 +23,7 @@ recordit=
 
 rm -rf "$log"
 
-domain_id=$(hae_domain_id "$domain")
+domain_id=$(hae_domain_id_linodesta "$domain")
 
 # for record in "$recordit"; do
 #     if [[ "$domain" == "$record" ]]; then

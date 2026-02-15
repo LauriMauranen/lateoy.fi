@@ -1,13 +1,19 @@
 #!/bin/bash
 
 source /sovellus/scriptit/avustajat.sh
+set +e
 
 kayttaja=matti
 domain=masa.com
 
+#siivous
+
+deluser --remove-home "$kayttaja"
+poista-domain.sh "$domain"
+
+set -e
 lisaa-kayttaja.sh "$kayttaja"
 lisaa-domain.sh "$kayttaja" "$domain"
-
 set +e
 
 # 1
@@ -19,9 +25,10 @@ fi
 
 # 2
 
-if hae_domain_id "$domain"; then
+if hae_domain_id_linodesta "$domain"; then
     testi_echo "$domain on vielä Linodessa!"
     virheita+=1
+    poista_domain_linodesta "$domain"
 fi
 
 # 3
@@ -31,16 +38,8 @@ log="/var/log/$domain"
 if [[ -e "$log" ]]; then
     testi_echo "Kansio $log on vielä olemassa!"
     virheita+=1
+    rm -rf "$log"
 fi
-
-#siivous
-
-set -e
-
-deluser --remove-home "$kayttaja"
-rm -rf "$log"
-poista_domain_linodesta "$domain"
-echo hello
 
 
 exit "$virheita"

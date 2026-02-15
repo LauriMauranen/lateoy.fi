@@ -15,12 +15,23 @@ while getopts "h" flag; do
 done
 
 testit="$@"
+kansio=/sovellus/testit
 
-[[ -z "$testit" ]] && echo "Testi puuttuu!" && exit 1
+if [[ -z "$testit" ]]; then
+    testit=*testi.sh
+else
+    uusi_testit=
+    for testi in "$testit"; do
+	uusi_testit+="${testi##*/}"
+    done
+    testit="$uusi_testit"
+fi
 
 export LINODE_CLI_TOKEN=$(cat /run/secrets/linode_cli_token)
 declare -A tulokset
 declare -i palautus
+
+cd "$kansio"
 
 for testi in $testit; do
     ./"$testi"
