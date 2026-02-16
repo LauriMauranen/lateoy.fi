@@ -6,7 +6,7 @@ record=false
 
 while getopts "hr" flag; do
     case "${flag}" in
-        h) echo "Käyttö: lisaa-domain kayttaja domain" 
+        h) echo "Käyttö: lisaa-domain [asetukset] kayttaja domain" 
 	   echo
 	   echo "Lisää käyttäjälle domainin Linodeen ja lokitus-kansion."
 	   echo
@@ -19,8 +19,8 @@ while getopts "hr" flag; do
     esac
 done
 
-kayttaja="$1"
-domain="$2"
+kayttaja="${@:$OPTIND:1}"
+domain="${@:$OPTIND+1:1}"
 
 log="/var/log/$domain"
 

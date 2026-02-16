@@ -4,10 +4,13 @@ source /sovellus/scriptit/avustajat.sh
 
 kayttaja=matti
 domain=masa.com
+record=hellurei
 
 # alustus
 
-alusta_kayttaja_ja_domain "$kayttaja" "$domain"
+alusta_kayttaja_ja_domain "$kayttaja" "$domain" true
+lisaa-a-record.sh "$kayttaja" "$domain" "$record"
+
 set +e
 
 # 1
@@ -22,6 +25,8 @@ if hae_domain_id_linodesta "$domain"; then
     virheita+=1
 fi
 
+eihan_kansio_ole_olemassa "/www-data/$domain"
+eihan_kansio_ole_olemassa "/www-data/$record.$domain"
 eihan_kansio_ole_olemassa "/var/log/$domain"
 
 

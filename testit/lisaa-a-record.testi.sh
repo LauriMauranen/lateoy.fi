@@ -8,7 +8,7 @@ record=terve
 
 # alustus
 
-alusta_kayttaja_ja_domain "$kayttaja" "$domain"
+alusta_kayttaja_ja_domain "$kayttaja" "$domain" false
 domain_id=$(hae_domain_id_linodesta "$domain")
 
 set +e

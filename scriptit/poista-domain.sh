@@ -19,13 +19,13 @@ domain="$1"
 log="/var/log/$domain"
 
 recordit=
-[[ -d "$log" ]] && recordit=$(ls -A "$log")
+[[ -d "$log" ]] && recordit=$(ls -A1 "$log")
 
 rm -rf "$log"
 
 domain_id=$(hae_domain_id_linodesta "$domain")
 
-for record in "$recordit"; do
+for record in $recordit; do
     if [[ "$domain" == "$record" ]]; then
 	poista-a-record.sh "$domain" "$record"
     elif [[ ! -z "$record" ]]; then

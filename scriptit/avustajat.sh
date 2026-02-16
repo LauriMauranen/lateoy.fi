@@ -48,7 +48,8 @@ hae_record_id_linodesta() {
     if [[ "$record_id" =~ [0-9]+ ]]; then
 	echo "${BASH_REMATCH[0]}"
     else
-	echo "Recordin hakeminen Linodelta epäonnistui"
+	echo "Recordin $record hakeminen Linodelta epäonnistui"
+	echo
 	return 1
     fi
 }
@@ -72,12 +73,17 @@ siivoa_kayttaja_ja_domain() {
 alusta_kayttaja_ja_domain() {
     kayttaja="$1"
     domain="$2"
+    if "$3"; then
+	lisaa_record="-r"
+    else
+	lisaa_record=
+    fi
 
     siivoa_kayttaja_ja_domain "$kayttaja" "$domain"
 
     set -e
     lisaa-kayttaja.sh "$kayttaja"
-    lisaa-domain.sh "$kayttaja" "$domain" -r
+    lisaa-domain.sh $lisaa_record "$kayttaja" "$domain"
 }
 
 onhan_kansio_olemassa() {
@@ -89,7 +95,7 @@ onhan_kansio_olemassa() {
 
 eihan_kansio_ole_olemassa() {
     if [[ -e "$1" ]]; then
-	testi_echo "Kansio $1 puuttuu!"
+	testi_echo "Kansio $1 on olemassa!"
 	virheita+=1
     fi
 }
