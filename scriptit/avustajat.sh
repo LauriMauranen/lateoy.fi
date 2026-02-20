@@ -38,7 +38,8 @@ hae_domain_id_linodesta() {
 
 hae_record_id_linodesta() {
     local record="$1"
-    local domain_id="$2"
+    local domain="$2"
+    local domain_id="$3"
 
     gr="\s$record\s"
     [[ "$domain" == "$record" ]] && gr="A\s*172"
@@ -61,7 +62,7 @@ hae_record_id_linodesta() {
 declare -i virheita=0
 
 testi_echo() {
-    echo "${0##*/}: $@" 
+    >&2	echo "${0##*/}: $@"
 }
 
 siivoa_kayttaja_ja_domain() {
@@ -98,4 +99,17 @@ eihan_kansio_ole_olemassa() {
 	testi_echo "Kansio $1 on olemassa!"
 	virheita+=1
     fi
+}
+
+satunnainen_mj() {
+    local merkit=abcdefghijklmnopqrstuvwxyz
+    local n="${#merkit}"
+    local tulos=
+
+    for i in {0..9}; do
+	local idx="$((RANDOM % n))"
+	local tulos+="${merkit:idx:1}"
+    done
+
+    echo "$tulos"
 }

@@ -2,9 +2,9 @@
 
 source /sovellus/scriptit/avustajat.sh
 
-kayttaja=matti
-domain=masa.com
-record=terve
+kayttaja="$(satunnainen_mj)"
+domain="$(satunnainen_mj).com"
+record="$(satunnainen_mj)"
 
 # alustus
 
@@ -31,7 +31,7 @@ if ! lisaa-a-record.sh "$kayttaja" "$domain" "$domain"; then
     virheita+=1
 fi
 
-if ! hae_record_id_linodesta "$domain" "$domain_id"; then
+if ! hae_record_id_linodesta "$domain" "$domain" "$domain_id"; then
     testi_echo "record $domain ei ole Linodessa!"
     virheita+=1
 fi
@@ -46,7 +46,7 @@ if ! lisaa-a-record.sh "$kayttaja" "$domain" "$record"; then
     virheita+=1
 fi
 
-if ! hae_record_id_linodesta "$record" "$domain_id"; then
+if ! hae_record_id_linodesta "$record" "$domain" "$domain_id"; then
     testi_echo "record $record ei ole Linodessa!"
     virheita+=1
 fi

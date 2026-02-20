@@ -27,9 +27,9 @@ domain_id=$(hae_domain_id_linodesta "$domain")
 
 for record in $recordit; do
     if [[ "$domain" == "$record" ]]; then
-	poista-a-record.sh "$domain" "$record"
+	poista-a-record.sh -k "$record" "$domain" 
     elif [[ ! -z "$record" ]]; then
-	poista-a-record.sh "$domain" "${record%%.*}"
+	poista-a-record.sh -k "${record%%.*}" "$domain" 
     fi
 done
 

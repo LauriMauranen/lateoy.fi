@@ -2,8 +2,8 @@
 
 source /sovellus/scriptit/avustajat.sh
 
-kayttaja=matti
-domain=masa.com
+kayttaja="$(satunnainen_mj)"
+domain="$(satunnainen_mj).com"
 
 # alustus
 
@@ -29,7 +29,7 @@ if [[ -z "$domain_id" ]]; then
     virheita+=1
 fi
 
-if ! hae_record_id_linodesta "$domain" "$domain_id"; then
+if ! hae_record_id_linodesta "$domain" "$domain" "$domain_id"; then
     testi_echo "Record $domain ei löydy Linodesta!"
     virheita+=1
 fi

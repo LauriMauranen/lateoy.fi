@@ -2,19 +2,38 @@
 
 set -uo pipefail
 
-while getopts "h" flag; do
+declare -A tulokset
+
+aja_testi() {
+    local testi="$1"
+
+    v=
+    if ! "$verboosi"; then
+	v="&> /dev/null"
+    fi
+
+    eval "./$testi $v"
+    echo "TESTITULOS $testi $?"
+}
+
+verboosi=false
+
+while getopts "hv" flag; do
     case "${flag}" in
-        h) echo "Käyttö: aja-testit testi..." 
+        h) echo "Käyttö: aja-testit [asetukset] testi..." 
 	   echo
 	   echo "Ajaa testit."
 	   echo
+	   echo "  -v            Verboosi."	
 	   echo "  -h            Tulosta tämä viesti."	
 	   exit 0
+		;;
+	v) verboosi=true
 		;;
     esac
 done
 
-testit="$@"
+testit="${@:OPTIND:${#@}}"
 kansio=/sovellus/testit
 
 if [[ -z "$testit" ]]; then
@@ -27,25 +46,22 @@ else
     testit="$uusi_testit"
 fi
 
-declare -A tulokset
-declare -i palautus
-
 cd "$kansio"
 
-for testi in $testit; do
-    echo "Ajetaan $testi"
-    echo
-    ./"$testi"
-    tulokset["$testi"]="$?"
-    palautus+="$?"
-done
+while read -r tulos; do
+    [[ "$tulos" =~ TESTITULOS ]] || continue
+    testi="${tulos% *}"
+    testi="${testi#* }"
+    virheita="${tulos##* }"
+    tulokset["$testi"]="$virheita"
+done < <(for t in $testit; do aja_testi "$t" & done)
 
-echo
+palautus=0
 
 for testi in "${!tulokset[@]}"; do
     tulos=Läpi
-    n="${tulokset[$testi]}" 
-    [[ "$n" > 0 ]] && tulos="Virheitä $n"
+    n="${tulokset[$testi]}"
+    [[ "$n" > 0 ]] && tulos="Virheitä $n" && palautus=1
     echo "$tulos | $testi"
 done
 

@@ -3,7 +3,7 @@
 source /sovellus/scriptit/avustajat.sh
 set +e
 
-kayttaja=matti
+kayttaja="$(satunnainen_mj)"
 
 # siivous
 

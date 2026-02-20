@@ -2,9 +2,9 @@
 
 source /sovellus/scriptit/avustajat.sh
 
-kayttaja=matti
-domain=masa.com
-record=hellurei
+kayttaja="$(satunnainen_mj)"
+domain="$(satunnainen_mj).com"
+record="$(satunnainen_mj)"
 
 # alustus
 
