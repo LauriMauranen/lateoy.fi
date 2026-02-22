@@ -7,7 +7,6 @@ domain="$(satunnainen_mj).com"
 
 # alustus
 
-siivoa_kayttaja_ja_domain "$kayttaja" "$domain" 
 lisaa-kayttaja.sh "$kayttaja" 
 
 set +e
@@ -34,5 +33,8 @@ if ! hae_record_id_linodesta "$domain" "$domain" "$domain_id"; then
     virheita+=1
 fi
 
+# siivous
+
+domains_komento rm "$domain_id"
 
 exit "$virheita"

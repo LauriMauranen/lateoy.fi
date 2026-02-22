@@ -1,12 +1,12 @@
 #!/bin/bash
 
 source /sovellus/scriptit/avustajat.sh
-set +e
 
 kayttaja="$(satunnainen_mj)"
 
 # siivous
 
+set +e
 deluser --remove-home "$kayttaja"
 
 # 1

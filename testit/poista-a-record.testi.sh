@@ -59,5 +59,9 @@ if hae_record_id_linodesta "$record" "$domain" "$domain_id"; then
     virheita+=1
 fi
 
+# siivous
+
+domains_komento rm "$domain_id"
+
 
 exit "$virheita"

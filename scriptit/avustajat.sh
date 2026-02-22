@@ -11,7 +11,7 @@ tee_koko_domain() {
     elif [[ "$record" =~ ^[a-zA-Z0-9_-]+$ ]]; then
 	koko_domain="$record.$domain"
     else
-	echo "Record on epäkelpo!"
+	echo "Record on epäkelpo!" >2&
 	return 1
     fi
 
@@ -30,8 +30,7 @@ hae_domain_id_linodesta() {
     if [[ "$domain_id" =~ [0-9]+ ]]; then
 	echo "${BASH_REMATCH[0]}"
     else
-	echo "Domainin $domain hakeminen Linodelta epäonnistui!"
-	echo
+	echo "Domainin $domain hakeminen Linodesta epäonnistui!" >2&
 	return 1
     fi
 }
@@ -49,10 +48,17 @@ hae_record_id_linodesta() {
     if [[ "$record_id" =~ [0-9]+ ]]; then
 	echo "${BASH_REMATCH[0]}"
     else
-	echo "Recordin $record hakeminen Linodelta epäonnistui"
-	echo
+	echo "Recordin $record hakeminen Linodesta epäonnistui!" >2&
 	return 1
     fi
+}
+
+poista_domain_linodesta() {
+    local domain="$1"
+    domain_id=$(hae_domain_id_linodesta "$domain" || :)
+    [[ -z "$domain_id" ]] && return 0
+    domains_komento rm "$domain_id"
+    echo "Domain $domain poistettiin Linodesta"
 }
 
 
@@ -62,13 +68,14 @@ hae_record_id_linodesta() {
 declare -i virheita=0
 
 testi_echo() {
-    >&2	echo "${0##*/}: $@"
+    echo "${0##*/}: $@" >&2	
 }
 
-siivoa_kayttaja_ja_domain() {
+poista_kayttaja_ja_domain() {
     set +e
     deluser --remove-home "$1"
-    poista-domain.sh "$2"
+    set -e
+    poista_domain_linodesta "$2"
 }
 
 alusta_kayttaja_ja_domain() {
@@ -80,9 +87,6 @@ alusta_kayttaja_ja_domain() {
 	lisaa_record=
     fi
 
-    siivoa_kayttaja_ja_domain "$kayttaja" "$domain"
-
-    set -e
     lisaa-kayttaja.sh "$kayttaja"
     lisaa-domain.sh $lisaa_record "$kayttaja" "$domain"
 }
@@ -106,7 +110,7 @@ satunnainen_mj() {
     local n="${#merkit}"
     local tulos=
 
-    for i in {0..9}; do
+    for i in {0..15}; do
 	local idx="$((RANDOM % n))"
 	local tulos+="${merkit:idx:1}"
     done

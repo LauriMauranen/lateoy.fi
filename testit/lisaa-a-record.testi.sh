@@ -54,5 +54,9 @@ fi
 onhan_kansio_olemassa "/www-data/$record.$domain"
 onhan_kansio_olemassa "/var/log/$domain/$record.$domain"
 
+# siivous
+
+domains_komento rm "$domain_id"
+
 
 exit "$virheita"

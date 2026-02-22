@@ -29,5 +29,9 @@ eihan_kansio_ole_olemassa "/www-data/$domain"
 eihan_kansio_ole_olemassa "/www-data/$record.$domain"
 eihan_kansio_ole_olemassa "/var/log/$domain"
 
+# siivous
+
+poista_domain_linodesta "$domain"
+
 
 exit "$virheita"

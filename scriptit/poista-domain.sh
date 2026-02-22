@@ -23,8 +23,6 @@ recordit=
 
 rm -rf "$log"
 
-domain_id=$(hae_domain_id_linodesta "$domain")
-
 for record in $recordit; do
     if [[ "$domain" == "$record" ]]; then
 	poista-a-record.sh -k "$record" "$domain" 
@@ -33,7 +31,6 @@ for record in $recordit; do
     fi
 done
 
-domains_komento rm "$domain_id"
-echo "Domain $domain poistettiin Linodesta"
+poista_domain_linodesta "$domain"
 
 # podman exec nginx nginx -s reload

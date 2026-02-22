@@ -1,7 +1,7 @@
 FROM docker.io/mgoltzsche/podman:latest
 
 RUN apk update
-RUN apk add bash py3-pip
+RUN apk add bash py3-pip parallel
 
 RUN pip3 install podman-compose --break-system-packages
 

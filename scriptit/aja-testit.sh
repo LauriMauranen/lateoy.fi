@@ -6,38 +6,45 @@ declare -A tulokset
 
 aja_testi() {
     local testi="$1"
+    local kansio="$2"
 
-    v=
-    if ! "$verboosi"; then
-	v="&> /dev/null"
-    fi
-
-    eval "./$testi $v"
-    echo "TESTITULOS $testi $?"
+    ./"$testi" &> "$kansio/${testi%.sh}"
+    echo "$testi $?"
 }
+export -f aja_testi
 
 verboosi=false
+testiajo=false
 
-while getopts "hv" flag; do
+while getopts "hvt" flag; do
     case "${flag}" in
         h) echo "Käyttö: aja-testit [asetukset] testi..." 
 	   echo
 	   echo "Ajaa testit."
 	   echo
+	   echo "  -t            Testiajo."	
 	   echo "  -v            Verboosi."	
 	   echo "  -h            Tulosta tämä viesti."	
 	   exit 0
 		;;
 	v) verboosi=true
 		;;
+	t) testiajo=true
+		;;
     esac
 done
 
 testit="${@:OPTIND:${#@}}"
-kansio=/sovellus/testit
+
+stdout_kansio=/tmp/aja-testit-stdout
+testikansio=/sovellus/testit
+
+if ! "$testiajo"; then
+    mkdir "$stdout_kansio"
+fi
 
 if [[ -z "$testit" ]]; then
-    testit=*testi.sh
+    testit=*.testi.sh
 else
     uusi_testit=
     for testi in "$testit"; do
@@ -46,17 +53,25 @@ else
     testit="$uusi_testit"
 fi
 
-cd "$kansio"
+cd "$testikansio"
+echo "Ajetaan testit $(echo $testit)"
 
 while read -r tulos; do
-    [[ "$tulos" =~ TESTITULOS ]] || continue
     testi="${tulos% *}"
-    testi="${testi#* }"
-    virheita="${tulos##* }"
+    virheita="${tulos#* }"
     tulokset["$testi"]="$virheita"
-done < <(for t in $testit; do aja_testi "$t" & done)
+done < <(parallel aja_testi ::: $testit ::: "$stdout_kansio")
 
 palautus=0
+
+if "$verboosi"; then
+    for testi in $testit; do
+	echo "$testi output:"
+	echo
+	cat "$stdout_kansio/${testi%.sh}"
+	echo
+    done
+fi
 
 for testi in "${!tulokset[@]}"; do
     tulos=Läpi
@@ -64,5 +79,9 @@ for testi in "${!tulokset[@]}"; do
     [[ "$n" > 0 ]] && tulos="Virheitä $n" && palautus=1
     echo "$tulos | $testi"
 done
+
+if ! "$testiajo"; then
+    rm -r "$stdout_kansio"
+fi
 
 exit "$palautus"
