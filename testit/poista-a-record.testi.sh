@@ -6,6 +6,8 @@ kayttaja="$(satunnainen_mj)"
 domain="$(satunnainen_mj).com"
 record="$(satunnainen_mj)"
 
+nginx_conf=/home/lauri/nginx/conf.d
+
 # alustus
 
 alusta_kayttaja_ja_domain "$kayttaja" "$domain" true
@@ -31,8 +33,9 @@ if hae_record_id_linodesta "$domain" "$domain" "$domain_id"; then
     virheita+=1
 fi
 
-eihan_kansio_ole_olemassa "/www-data/$domain"
-eihan_kansio_ole_olemassa "/var/log/$domain/$domain"
+eihan_ole_olemassa "/www-data/$domain"
+eihan_ole_olemassa "/var/log/$domain/$domain"
+eihan_ole_olemassa "$nginx_conf/$domain.conf"
 
 
 if ! poista-a-record.sh -k "$record" "$domain"; then
@@ -45,8 +48,9 @@ if ! hae_record_id_linodesta "$record" "$domain" "$domain_id"; then
     virheita+=1
 fi
 
-eihan_kansio_ole_olemassa "/www-data/$record.$domain"
-eihan_kansio_ole_olemassa "/var/log/$domain/$record.$domain"
+eihan_ole_olemassa "/www-data/$record.$domain"
+eihan_ole_olemassa "/var/log/$domain/$record.$domain"
+eihan_ole_olemassa "$nginx_conf/$record.$domain.conf"
 
 
 if ! poista-a-record.sh "$record" "$domain" "$domain_id"; then

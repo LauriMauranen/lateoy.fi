@@ -61,6 +61,57 @@ poista_domain_linodesta() {
     echo "Domain $domain poistettiin Linodesta"
 }
 
+seuraava_portti() {
+    local tiedosto="$1"
+    local portti=
+
+    # luetaan ensimmäinen rivi
+    while read -r rivi; do
+      local portti="$rivi"
+      break
+    done <"$tiedosto"
+
+    if [[ (( "$portti" > 7999 )) || (( "$portti" < 8999 )) ]]; then
+	# poistetaan portti tiedostosta
+	sed '1d' -i "$tiedosto"
+    else
+	echo "Portin pitää olla välillä 8000-8999! ($portti)" >2&
+	local portti=
+    fi
+
+    echo $portti
+}
+
+laita_portti_takaisin() {
+    local portit="$1"
+    local nginx_conf="$2"
+    local record=${nginx_conf##*/}
+    local record=${record%.*}
+
+    local portti=$(grep "proxy_pass http://$record:\d\d\d\d;" $nginx_conf || :)
+    local portti=${portti##*:}
+    local portti=${portti%;}
+
+    if [[ -z $portti ]]; then
+	echo "Portti on tyhjä merkkijono!" >2&
+    else 
+	echo "$portti" >> $portit
+    fi
+}
+
+rakenna_nginx_conf() {
+    local domain="$1"
+    local koko_domain="$2"
+    local backend_port="$3"
+    local nginx_template="$4"
+
+    local sed_1="s/{{ domain }}/$domain/g"
+    local sed_2="s/{{ koko-domain }}/$koko_domain/g"
+    local sed_3="s/{{ backend-port }}/$backend_portti/g"
+
+    sed -e "$sed_1" -e "$sed_2" -e "$sed_3" "$nginx_template"
+}
+
 
 # testeihin
 
@@ -91,14 +142,14 @@ alusta_kayttaja_ja_domain() {
     lisaa-domain.sh $lisaa_record "$kayttaja" "$domain"
 }
 
-onhan_kansio_olemassa() {
+onhan_olemassa() {
     if [[ ! -e "$1" ]]; then
 	testi_echo "Kansio $1 puuttuu!"
 	virheita+=1
     fi
 }
 
-eihan_kansio_ole_olemassa() {
+eihan_ole_olemassa() {
     if [[ -e "$1" ]]; then
 	testi_echo "Kansio $1 on olemassa!"
 	virheita+=1

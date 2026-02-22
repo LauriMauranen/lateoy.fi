@@ -2,27 +2,6 @@
 
 source avustajat.sh
 
-seuraavaPortti() {
-    local tiedosto="$1"
-    local portti=
-
-    # luetaan ensimmäinen rivi
-    while read -r rivi; do
-      local portti="$rivi"
-      break
-    done <$tiedosto
-
-    if [[ (( $portti > 7999 )) || (( $portti < 8999 )) ]]; then
-	# poistetaan portti tiedostosta
-	sed '1d' -i $tiedosto
-    else
-	echo "Portin pitää olla välillä 8000-8999! ($portti)"
-	local portti=
-    fi
-
-    echo $portti
-}
-
 backend_portti=
 
 while getopts "h" flag; do
@@ -55,32 +34,22 @@ echo "Terve $kayttaja!" > "$data/index.html"
 
 chown "$kayttaja" "$data" "$log" -R
 
-# nginx-konfiguraatio
+portit=/home/lauri/nginx/porttinumerot.txt
 
-# nginx_conf="/home/lauri/nginx/conf.d/$koko_domain.conf"
-# nginx_template=/home/lauri/lateoy.fi/conf.d/user-template
-# portit=/home/lauri/nginx/porttinumerot.txt
+[[ -z "$backend_portti" ]] && backend_portti=$(seuraava_portti $portit)
+[[ -z "$backend_portti" ]] && echo "Portin numeroa ei saatu!" && exit 1
 
-# [[ -z $backend_portti ]] && backend_portti=$(seuraavaPortti $portit)
-# [[ -z $backend_portti ]] && exit 1
+nginx_conf="/home/lauri/nginx/conf.d/$koko_domain.conf"
+nginx_template=/home/lauri/lateoy.fi/conf.d/user-template
 
-# sed_1="s/{{ domain }}/$domain/g"
-# sed_2="s/{{ koko-domain }}/$koko_domain/g"
-# sed_3="s/{{ backend-port }}/$backend_portti/g"
-
-# sed -e "$sed_1" -e "$sed_2" -e "$sed_3" "$nginx_template" > "$nginx_conf"
-
-# chown lauri "$nginx_conf"
-
-# echo "Luotiin $nginx_conf"
-
-# linode
+rakenna_nginx_conf "$domain" "$koko_domain" "$backend_portti" "$nginx_template" \
+    > "$nginx_conf"
+chown lauri "$nginx_conf"
 
 ip=172.234.123.168 
 email=lauri.mauranen@gmail.com
 
 domain_id=$(hae_domain_id_linodesta "$domain")
-
 domains_komento records-create --name "$record" --type A --target "$ip" "$domain_id"
 
 # päivitetään nginx

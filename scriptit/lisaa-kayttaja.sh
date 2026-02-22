@@ -17,7 +17,7 @@ done
 kayttaja="$1"
 
 # useradd -s /bin/bash -U -m -G users "$kayttaja" || exit 1
-adduser -s /bin/bash -G users -D "$kayttaja" || exit 1
+adduser -s /bin/bash -G users -D "$kayttaja"
 
 home="/home/$kayttaja/"
 

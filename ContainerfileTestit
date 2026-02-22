@@ -7,4 +7,11 @@ RUN pip3 install podman-compose --break-system-packages
 
 ENV PATH=$PATH:/sovellus/scriptit 
 
+RUN adduser -s /bin/bash -G users -D lauri
+WORKDIR /home/lauri
+
+RUN mkdir -p nginx/conf.d lateoy.fi
+COPY conf.d lateoy.fi/conf.d
+RUN bash -c 'for i in {8000..8999}; do echo "$i" >> nginx/porttinumerot.txt; done'
+
 ENTRYPOINT ["aja-testit.sh"]

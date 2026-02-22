@@ -25,9 +25,9 @@ if hae_domain_id_linodesta "$domain"; then
     virheita+=1
 fi
 
-eihan_kansio_ole_olemassa "/www-data/$domain"
-eihan_kansio_ole_olemassa "/www-data/$record.$domain"
-eihan_kansio_ole_olemassa "/var/log/$domain"
+eihan_ole_olemassa "/www-data/$domain"
+eihan_ole_olemassa "/www-data/$record.$domain"
+eihan_ole_olemassa "/var/log/$domain"
 
 # siivous
 

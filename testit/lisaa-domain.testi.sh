@@ -18,8 +18,8 @@ if ! lisaa-domain.sh -r "$kayttaja" "$domain"; then
     virheita+=1
 fi
 
-onhan_kansio_olemassa "/var/log/$domain/$domain"
-onhan_kansio_olemassa "/www-data/$domain"
+onhan_olemassa "/var/log/$domain/$domain"
+onhan_olemassa "/www-data/$domain"
 
 domain_id=$(hae_domain_id_linodesta "$domain")
 
