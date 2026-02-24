@@ -33,4 +33,6 @@ done
 
 poista_domain_linodesta "$domain"
 
-# podman exec nginx nginx -s reload
+[[ "$TESTIAJO" == true ]] && exit 0
+
+podman exec nginx nginx -s reload

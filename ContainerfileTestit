@@ -7,6 +7,7 @@ RUN pip3 install podman-compose --break-system-packages
 
 ENV PATH=$PATH:/sovellus/scriptit 
 
+RUN printf 'will cite\n' | parallel --citation
 RUN adduser -s /bin/bash -G users -D lauri
 WORKDIR /home/lauri
 

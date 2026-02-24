@@ -4,23 +4,24 @@ source avustajat.sh
 
 backend_portti=
 
-while getopts "h" flag; do
+while getopts "hp" flag; do
     case "${flag}" in
         h) echo "Käyttö: lisaa-a-record kayttaja domain record" 
 	   echo
 	   echo "Lisää A-recordin domainille Linodeen ja tekee sille nginx-konfiguraation ja tarvittavat kansiot ja päivittää nginx-kontin."
 	   echo
 	   echo "  -h            Tulosta tämä viesti."	
+	   echo "  -p            Aseta backend portti jos saatavilla."	
 	   exit 0
 		;;
-	# p) backend_portti="$OPTARG" 
-		# ;;
+	p) backend_portti="$OPTARG" 
+		;;
     esac
 done
 
-kayttaja="$1"
-domain="$2"
-record="$3"
+kayttaja="${@:$OPTIND:1}"
+domain="${@:$OPTIND+1:1}"
+record="${@:$OPTIND+2:1}"
 
 koko_domain=$(tee_koko_domain "$domain" "$record")
 
@@ -36,7 +37,7 @@ chown "$kayttaja" "$data" "$log" -R
 
 portit=/home/lauri/nginx/porttinumerot.txt
 
-[[ -z "$backend_portti" ]] && backend_portti=$(seuraava_portti $portit)
+backend_portti="$(ota_portti_tiedostosta "$portit" "$backend_portti")"
 [[ -z "$backend_portti" ]] && echo "Portin numeroa ei saatu!" && exit 1
 
 nginx_conf="/home/lauri/nginx/conf.d/$koko_domain.conf"
@@ -52,15 +53,15 @@ email=lauri.mauranen@gmail.com
 domain_id=$(hae_domain_id_linodesta "$domain")
 domains_komento records-create --name "$record" --type A --target "$ip" "$domain_id"
 
-# päivitetään nginx
+[[ "$TESTIAJO" == true ]] && exit 0
 
-# echo "Odotetaan 10 sekuntia..."
-# sleep 10
+echo "Odotetaan 10 sekuntia..."
+sleep 10
 
-# if podman exec nginx nginx -t; then
-#     podman exec nginx nginx -s reload
-#     echo "Ladattiin uusi nginx-konfiguraatio. https://$koko_domain toimii nyt."
-# else
-#     mv "$nginx_conf" "$nginx_conf.error"
-#     echo "Nginx-konfiguraatio palautti virheen! Löytyykö domainilta ssl-sertifikaatti?"
-# fi
+if podman exec nginx nginx -t; then
+    podman exec nginx nginx -s reload
+    echo "Ladattiin uusi nginx-konfiguraatio. https://$koko_domain toimii nyt."
+else
+    mv "$nginx_conf" "$nginx_conf.error"
+    echo "Nginx-konfiguraatio palautti virheen! Löytyykö domainilta ssl-sertifikaatti?"
+fi

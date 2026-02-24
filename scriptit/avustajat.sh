@@ -61,42 +61,35 @@ poista_domain_linodesta() {
     echo "Domain $domain poistettiin Linodesta"
 }
 
-seuraava_portti() {
+ota_portti_tiedostosta() {
     local tiedosto="$1"
+    local porttitoive="$2"
+
+    declare -i local nro=1
     local portti=
 
-    # luetaan ensimmäinen rivi
-    while read -r rivi; do
-      local portti="$rivi"
-      break
-    done <"$tiedosto"
-
-    if [[ (( "$portti" > 7999 )) || (( "$portti" < 8999 )) ]]; then
-	# poistetaan portti tiedostosta
-	sed '1d' -i "$tiedosto"
-    else
-	echo "Portin pitää olla välillä 8000-8999! ($portti)" >2&
-	local portti=
+    if [[ ! -z "$porttitoive" ]]; then
+	while read -r rivi; do
+	    if [[ "$rivi" == "$porttitoive" ]]; then
+	      local portti="$rivi"
+	      break
+	    fi
+	    local nro+=1 
+	done <"$tiedosto"
     fi
+
+    if [[ -z "$portti" ]]; then
+	local nro=1
+	while read -r rivi; do
+	  local portti="$rivi"
+	  break
+	done <"$tiedosto"
+    fi
+
+    # poistetaan portti tiedostosta
+    sed "${nro}d" -i "$tiedosto"
 
     echo $portti
-}
-
-laita_portti_takaisin() {
-    local portit="$1"
-    local nginx_conf="$2"
-    local record=${nginx_conf##*/}
-    local record=${record%.*}
-
-    local portti=$(grep "proxy_pass http://$record:\d\d\d\d;" $nginx_conf || :)
-    local portti=${portti##*:}
-    local portti=${portti%;}
-
-    if [[ -z $portti ]]; then
-	echo "Portti on tyhjä merkkijono!" >2&
-    else 
-	echo "$portti" >> $portit
-    fi
 }
 
 rakenna_nginx_conf() {
@@ -120,13 +113,6 @@ declare -i virheita=0
 
 testi_echo() {
     echo "${0##*/}: $@" >&2	
-}
-
-poista_kayttaja_ja_domain() {
-    set +e
-    deluser --remove-home "$1"
-    set -e
-    poista_domain_linodesta "$2"
 }
 
 alusta_kayttaja_ja_domain() {

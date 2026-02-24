@@ -1,5 +1,8 @@
 #!/bin/bash
 
+testiajo=false 
+[[ "$TESTIAJO" == true ]] && testiajo=true
+
 set -uo pipefail
 
 declare -A tulokset
@@ -14,33 +17,29 @@ aja_testi() {
 export -f aja_testi
 
 verboosi=false
-testiajo=false
 
-while getopts "hvt" flag; do
+while getopts "hv" flag; do
     case "${flag}" in
         h) echo "Käyttö: aja-testit [asetukset] testi..." 
 	   echo
 	   echo "Ajaa testit."
 	   echo
-	   echo "  -t            Testiajo."	
 	   echo "  -v            Verboosi."	
 	   echo "  -h            Tulosta tämä viesti."	
 	   exit 0
 		;;
 	v) verboosi=true
 		;;
-	t) testiajo=true
-		;;
     esac
 done
 
 testit="${@:OPTIND:${#@}}"
 
-stdout_kansio=/tmp/aja-testit-stdout
+stdout_kansio=/tmp/testitmp/aja-testit-stdout
 testikansio=/sovellus/testit
 
 if ! "$testiajo"; then
-    mkdir "$stdout_kansio"
+    mkdir -p "$stdout_kansio"
 fi
 
 if [[ -z "$testit" ]]; then
@@ -53,6 +52,7 @@ else
     testit="$uusi_testit"
 fi
 
+export TESTIAJO=true
 cd "$testikansio"
 echo "Ajetaan testit $(echo $testit)"
 
@@ -82,6 +82,7 @@ done
 
 if ! "$testiajo"; then
     rm -r "$stdout_kansio"
+    unset TESTIAJO
 fi
 
 exit "$palautus"

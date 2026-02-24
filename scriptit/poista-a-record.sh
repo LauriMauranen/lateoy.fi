@@ -23,7 +23,6 @@ record="${@:$OPTIND:1}"
 domain="${@:$OPTIND+1:1}"
 domain_id="${@:$OPTIND+2:1}"
 
-
 if ! ("$poista_linodesta" || [[ -z "$domain_id" ]]); then
     echo "domain_id annettu vaikka ei poisteta recordia Linodesta!"
     exit 1
@@ -37,7 +36,18 @@ portit=/home/lauri/nginx/porttinumerot.txt
 
 nginx_conf="/home/lauri/nginx/conf.d/$koko_domain.conf"
 [[ ! -e "$nginx_conf" ]] && nginx_conf="$nginx_conf.error"
-[[ -e "$nginx_conf" ]] && laita_portti_takaisin $portit $nginx_conf
+
+if [[ -e "$nginx_conf" ]]; then
+    portti="$(grep "proxy_pass http://$record:\d\d\d\d;" "$nginx_conf" || :)"
+    portti="${portti##*:}"
+    portti="${portti%;}"
+
+    if [[ -z "$portti" ]]; then
+	echo "Portin etsiminen tiedostosta $nginx_conf epäonnistui!" >2&
+    else 
+	echo "$portti" >> "$portit"
+    fi
+fi
 
 rm -rfv "$data"
 rm -rfv "$log"
@@ -49,4 +59,6 @@ if "$poista_linodesta"; then
     domains_komento records-delete "$domain_id" "$record_id"
 fi
 
-# podman exec nginx nginx -s reload
+[[ "$TESTIAJO" == true ]] && exit 0
+
+podman exec nginx nginx -s reload
