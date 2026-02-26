@@ -11,7 +11,7 @@ tee_koko_domain() {
     elif [[ "$record" =~ ^[a-zA-Z0-9_-]+$ ]]; then
 	koko_domain="$record.$domain"
     else
-	echo "Record on epäkelpo!" >2&
+	echo "Record on epäkelpo!" >&2
 	return 1
     fi
 
@@ -30,7 +30,7 @@ hae_domain_id_linodesta() {
     if [[ "$domain_id" =~ [0-9]+ ]]; then
 	echo "${BASH_REMATCH[0]}"
     else
-	echo "Domainin $domain hakeminen Linodesta epäonnistui!" >2&
+	echo "Domainin $domain hakeminen Linodesta epäonnistui!" >&2
 	return 1
     fi
 }
@@ -48,7 +48,7 @@ hae_record_id_linodesta() {
     if [[ "$record_id" =~ [0-9]+ ]]; then
 	echo "${BASH_REMATCH[0]}"
     else
-	echo "Recordin $record hakeminen Linodesta epäonnistui!" >2&
+	echo "Recordin $record hakeminen Linodesta epäonnistui!" >&2
 	return 1
     fi
 }

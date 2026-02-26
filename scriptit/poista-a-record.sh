@@ -43,7 +43,7 @@ if [[ -e "$nginx_conf" ]]; then
     portti="${portti%;}"
 
     if [[ -z "$portti" ]]; then
-	echo "Portin etsiminen tiedostosta $nginx_conf epäonnistui!" >2&
+	echo "Portin etsiminen tiedostosta $nginx_conf epäonnistui!" >&2
     else 
 	echo "$portti" >> "$portit"
     fi

@@ -16,7 +16,6 @@ domain_id="$(hae_domain_id_linodesta "$domain")"
 
 set +e
 
-
 if poista-a-record.sh -k "$record" "$domain" "$domain_id"; then
     testi_echo "Vivun -k ja domain_id:n pitää palauttaa virhe!"
     virheita+=1
@@ -44,7 +43,7 @@ if ! poista-a-record.sh -k "$record" "$domain"; then
 fi
 
 if ! hae_record_id_linodesta "$record" "$domain" "$domain_id"; then
-    testi_echo "Record $domain ei ole Linodessa!"
+    testi_echo "Record $record ei löydy Linodesta!"
     virheita+=1
 fi
 
@@ -59,7 +58,7 @@ if ! poista-a-record.sh "$record" "$domain" "$domain_id"; then
 fi
 
 if hae_record_id_linodesta "$record" "$domain" "$domain_id"; then
-    testi_echo "Record $domain on vielä Linodessa!"
+    testi_echo "Record $record on vielä Linodessa!"
     virheita+=1
 fi
 
