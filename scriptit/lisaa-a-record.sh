@@ -6,7 +6,7 @@ backend_portti=
 
 while getopts "hp" flag; do
     case "${flag}" in
-        h) echo "Käyttö: lisaa-a-record kayttaja domain record" 
+        h) echo "Käyttö: lisaa-a-record [asetukset] kayttaja domain record" 
 	   echo
 	   echo "Lisää A-recordin domainille Linodeen ja tekee sille nginx-konfiguraation ja tarvittavat kansiot ja päivittää nginx-kontin."
 	   echo
