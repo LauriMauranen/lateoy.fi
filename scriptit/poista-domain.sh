@@ -32,7 +32,3 @@ for record in $recordit; do
 done
 
 poista_domain_linodesta "$domain"
-
-[[ "$TESTIAJO" == true ]] && exit 0
-
-podman exec nginx nginx -s reload

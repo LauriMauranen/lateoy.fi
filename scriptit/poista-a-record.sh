@@ -58,7 +58,3 @@ if "$poista_linodesta"; then
     record_id=$(hae_record_id_linodesta "$record" "$domain" "$domain_id")
     domains_komento records-delete "$domain_id" "$record_id"
 fi
-
-[[ "$TESTIAJO" == true ]] && exit 0
-
-podman exec nginx nginx -s reload

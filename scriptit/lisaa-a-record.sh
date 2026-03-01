@@ -52,16 +52,3 @@ email=lauri.mauranen@gmail.com
 
 domain_id=$(hae_domain_id_linodesta "$domain")
 domains_komento records-create --name "$record" --type A --target "$ip" "$domain_id"
-
-[[ "$TESTIAJO" == true ]] && exit 0
-
-echo "Odotetaan 10 sekuntia..."
-sleep 10
-
-if podman exec nginx nginx -t; then
-    podman exec nginx nginx -s reload
-    echo "Ladattiin uusi nginx-konfiguraatio. https://$koko_domain toimii nyt."
-else
-    mv "$nginx_conf" "$nginx_conf.error"
-    echo "Nginx-konfiguraatio palautti virheen! Löytyykö domainilta ssl-sertifikaatti?"
-fi
