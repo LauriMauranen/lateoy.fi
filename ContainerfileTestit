@@ -5,14 +5,19 @@ RUN apk add bash py3-pip parallel
 
 RUN pip3 install podman-compose --break-system-packages
 
-ENV PATH=$PATH:/sovellus/scriptit 
+RUN adduser -s /bin/bash -D lauri
+RUN echo "lauri:100000:65535" >> /etc/subuid
+RUN echo "lauri:100000:65535" >> /etc/subgid
+RUN su lauri && printf 'will cite\n' | parallel --citation && exit
 
-RUN printf 'will cite\n' | parallel --citation
-RUN adduser -s /bin/bash -G users -D lauri
 WORKDIR /home/lauri
 
+RUN mkdir /var/log/sovelluslokit && chown lauri /var/log/sovelluslokit
 RUN mkdir -p nginx/conf.d lateoy.fi
 COPY conf.d lateoy.fi/conf.d
 RUN bash -c 'for i in {8000..8999}; do echo "$i" >> nginx/porttinumerot.txt; done'
+
+COPY scriptit /usr/local/bin
+RUN chmod a+x /usr/local/bin -R
 
 ENTRYPOINT ["aja-testit.sh"]

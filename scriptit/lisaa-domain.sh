@@ -1,5 +1,8 @@
 #!/bin/bash
 
+testiajo=false
+[[ "$TESTIAJO" == true ]] && testiajo=true
+
 source avustajat.sh
 
 record=false
@@ -22,13 +25,15 @@ done
 kayttaja="${@:$OPTIND:1}"
 domain="${@:$OPTIND+1:1}"
 
-log="/var/log/$domain"
+log="/var/log/sovelluslokit/$domain"
 
-mkdir -v "$log"
-chown "$kayttaja" "$log" -R
+mkdir -v -m 700 "$log"
+
+if ! "$testiajo"; then
+    chown "$kayttaja" "$log" -R
+fi
 
 email=lauri.mauranen@gmail.com
-
 domains_komento create --domain "$domain" --type master --soa_email "$email"
 
 if "$record"; then lisaa-a-record.sh $kayttaja $domain $domain; fi

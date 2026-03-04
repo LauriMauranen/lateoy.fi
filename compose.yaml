@@ -21,6 +21,7 @@ services:
   testit:
     build: 
       dockerfile: ./ContainerfileTestit
+    user: lauri
     container_name: testit
     privileged: true
     environment:
@@ -30,6 +31,15 @@ services:
       - /home/lauri/projektit/lateoy.fi/:/sovellus/:ro
       # ei tarvitse joka kerta ladata linode-cli kuvaa
       - containers:/var/lib/containers/storage/
+
+  tofu:
+    build: 
+      dockerfile: ./ContainerfileTofu
+    container_name: tofu
+    environment:
+      - LINODE_TOKEN=${LINODE_CLI_TOKEN}
+    volumes: 
+      - /home/lauri/projektit/lateoy.fi/tofut:/local
 
 volumes:
   containers:

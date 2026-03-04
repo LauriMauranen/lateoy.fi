@@ -1,5 +1,8 @@
 #!/bin/bash
 
+testiajo=false
+[[ "$TESTIAJO" == true ]] && testiajo=true
+
 source avustajat.sh
 
 backend_portti=
@@ -28,12 +31,14 @@ koko_domain=$(tee_koko_domain "$domain" "$record")
 # kansiot
 
 data="/www-data/$koko_domain"
-log="/var/log/$domain/$koko_domain"
+log="/var/log/sovelluslokit/$domain/$koko_domain"
 
 mkdir -p -v "$data" "$log/nginx"
 echo "Terve $kayttaja!" > "$data/index.html"
 
-chown "$kayttaja" "$data" "$log" -R
+if ! "$testiajo"; then
+    chown "$kayttaja" "$data" "$log" -R
+fi
 
 portit=/home/lauri/nginx/porttinumerot.txt
 

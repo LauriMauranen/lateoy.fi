@@ -7,7 +7,7 @@ domain="$(satunnainen_mj).com"
 
 # alustus
 
-lisaa-kayttaja.sh "$kayttaja" 
+# adduser -D "$kayttaja" 
 
 set +e
 
@@ -18,7 +18,7 @@ if ! lisaa-domain.sh -r "$kayttaja" "$domain"; then
     virheita+=1
 fi
 
-onhan_olemassa "/var/log/$domain/$domain"
+onhan_olemassa "$LOKIT/$domain/$domain"
 onhan_olemassa "/www-data/$domain"
 
 domain_id=$(hae_domain_id_linodesta "$domain")

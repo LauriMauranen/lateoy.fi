@@ -31,7 +31,7 @@ fi
 koko_domain=$(tee_koko_domain "$domain" "$record")
 
 data="/www-data/$koko_domain"
-log="/var/log/$domain/$koko_domain"
+log="/var/log/sovelluslokit/$domain/$koko_domain"
 portit=/home/lauri/nginx/porttinumerot.txt
 
 nginx_conf="/home/lauri/nginx/conf.d/$koko_domain.conf"

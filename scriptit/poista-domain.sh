@@ -16,7 +16,7 @@ done
 
 domain="$1"
 
-log="/var/log/$domain"
+log="/var/log/sovelluslokit/$domain"
 
 recordit=
 [[ -d "$log" ]] && recordit=$(ls -A1 "$log")

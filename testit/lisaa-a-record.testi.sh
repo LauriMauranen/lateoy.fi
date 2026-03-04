@@ -39,7 +39,7 @@ if ! hae_record_id_linodesta "$domain" "$domain" "$domain_id"; then
 fi
 
 onhan_olemassa "/www-data/$domain"
-onhan_olemassa "/var/log/$domain/$domain"
+onhan_olemassa "$LOKIT/$domain/$domain"
 onhan_olemassa "$nginx_conf/$domain.conf"
 
 # 3
@@ -55,7 +55,7 @@ if ! hae_record_id_linodesta "$record" "$domain" "$domain_id"; then
 fi
 
 onhan_olemassa "/www-data/$record.$domain"
-onhan_olemassa "/var/log/$domain/$record.$domain"
+onhan_olemassa "$LOKIT/$domain/$record.$domain"
 onhan_olemassa "$nginx_conf/$record.$domain.conf"
 
 # siivous

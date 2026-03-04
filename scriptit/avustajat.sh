@@ -111,6 +111,8 @@ rakenna_nginx_conf() {
 
 declare -i virheita=0
 
+LOKIT=/var/log/sovelluslokit
+
 testi_echo() {
     echo "${0##*/}: $@" >&2	
 }
@@ -124,7 +126,7 @@ alusta_kayttaja_ja_domain() {
 	lisaa_record=
     fi
 
-    lisaa-kayttaja.sh "$kayttaja"
+    # adduser -D "$kayttaja"
     lisaa-domain.sh $lisaa_record "$kayttaja" "$domain"
 }
 
