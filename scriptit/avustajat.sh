@@ -21,49 +21,6 @@ tee_koko_domain() {
     echo "$koko_domain"
 }
 
-domains_komento() {
-    podman compose -f "$COMPOSE_LINODE" run --rm linode-cli domains --text "$@"
-}
-
-hae_domain_id_linodesta() {
-    local domain="$1"
-
-    local domain_id=$(domains_komento ls | grep "\s$domain\s" || :)
-
-    if [[ "$domain_id" =~ [0-9]+ ]]; then
-	echo "${BASH_REMATCH[0]}"
-    else
-	echo "Domainin $domain hakeminen Linodesta epäonnistui!" >&2
-	return 1
-    fi
-}
-
-hae_record_id_linodesta() {
-    local record="$1"
-    local domain="$2"
-    local domain_id="$3"
-
-    gr="\s$record\s"
-    [[ "$domain" == "$record" ]] && gr="A\s*172"
-
-    record_id=$(domains_komento records-list "$domain_id" | grep "$gr" || :)
-
-    if [[ "$record_id" =~ [0-9]+ ]]; then
-	echo "${BASH_REMATCH[0]}"
-    else
-	echo "Recordin $record hakeminen Linodesta epäonnistui!" >&2
-	return 1
-    fi
-}
-
-poista_domain_linodesta() {
-    local domain="$1"
-    domain_id=$(hae_domain_id_linodesta "$domain" || :)
-    [[ -z "$domain_id" ]] && return 0
-    domains_komento rm "$domain_id"
-    echo "Domain $domain poistettiin Linodesta"
-}
-
 ota_portti_tiedostosta() {
     local tiedosto="$1"
     local porttitoive="$2"
@@ -101,11 +58,14 @@ rakenna_nginx_conf() {
     local backend_port="$3"
     local nginx_template="$4"
 
+    local lokit="$LOKIT/$domain/$koko_domain/nginx"
+
     local sed_1="s/{{ domain }}/$domain/g"
     local sed_2="s/{{ koko-domain }}/$koko_domain/g"
     local sed_3="s/{{ backend-port }}/$backend_portti/g"
+    local sed_4="s/{{ lokit }}/$lokit/g"
 
-    sed -e "$sed_1" -e "$sed_2" -e "$sed_3" "$nginx_template"
+    sed -e "$sed_1" -e "$sed_2" -e "$sed_3" -e "$sed_4" "$nginx_template"
 }
 
 

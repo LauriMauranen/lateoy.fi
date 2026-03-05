@@ -14,8 +14,8 @@ server {
 	ssl_certificate     /etc/letsencrypt/live/{{ domain }}/fullchain.pem;
 	ssl_certificate_key /etc/letsencrypt/live/{{ domain }}/privkey.pem;
 
-        error_log /var/log/{{ domain }}/{{ koko-domain }}/nginx/error.log;
-        access_log /var/log/{{ domain }}/{{ koko-domain }}/nginx/access.log;
+        error_log {{ lokit }}/error.log;
+        access_log {{ lokit }}/access.log;
 
 	root /www-data/{{ koko-domain }};
 

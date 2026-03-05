@@ -28,6 +28,3 @@ services:
       - LINODE_TOKEN=${LINODE_CLI_TOKEN}
     volumes: 
       - /home/lauri/projektit/lateoy.fi/tofut:/local
-
-volumes:
-  containers:
