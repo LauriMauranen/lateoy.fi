@@ -12,25 +12,13 @@ services:
       - /var/log/:/var/log/
       - /www-data/:/www-data/:ro
 
-  linode-cli:
-    image: "docker.io/linode/cli:5.65.0"
-    container_name: linode-cli
-    environment:
-      - LINODE_CLI_TOKEN=${LINODE_CLI_TOKEN}
-
   testit:
     build: 
       dockerfile: ./ContainerfileTestit
     user: lauri
     container_name: testit
-    privileged: true
-    environment:
-      - COMPOSE_LINODE=/sovellus/compose.yaml
-      - LINODE_CLI_TOKEN=${LINODE_CLI_TOKEN}
     volumes:
       - /home/lauri/projektit/lateoy.fi/:/sovellus/:ro
-      # ei tarvitse joka kerta ladata linode-cli kuvaa
-      - containers:/var/lib/containers/storage/
 
   tofu:
     build: 

@@ -2,16 +2,14 @@
 
 source /sovellus/scriptit/avustajat.sh
 
-kayttaja="$(satunnainen_mj)"
+kayttaja=lauri
 domain="$(satunnainen_mj).com"
 record="$(satunnainen_mj)"
-
 nginx_conf=/home/lauri/nginx/conf.d
 
 # alustus
 
-alusta_kayttaja_ja_domain "$kayttaja" "$domain" false
-domain_id=$(hae_domain_id_linodesta "$domain")
+lisaa-domain.sh  "$kayttaja" "$domain"
 
 set +e
 
@@ -33,11 +31,6 @@ if ! lisaa-a-record.sh "$kayttaja" "$domain" "$domain"; then
     virheita+=1
 fi
 
-if ! hae_record_id_linodesta "$domain" "$domain" "$domain_id"; then
-    testi_echo "record $domain ei ole Linodessa!"
-    virheita+=1
-fi
-
 onhan_olemassa "/www-data/$domain"
 onhan_olemassa "$LOKIT/$domain/$domain"
 onhan_olemassa "$nginx_conf/$domain.conf"
@@ -49,18 +42,9 @@ if ! lisaa-a-record.sh "$kayttaja" "$domain" "$record"; then
     virheita+=1
 fi
 
-if ! hae_record_id_linodesta "$record" "$domain" "$domain_id"; then
-    testi_echo "record $record ei ole Linodessa!"
-    virheita+=1
-fi
-
 onhan_olemassa "/www-data/$record.$domain"
 onhan_olemassa "$LOKIT/$domain/$record.$domain"
 onhan_olemassa "$nginx_conf/$record.$domain.conf"
-
-# siivous
-
-domains_komento rm "$domain_id"
 
 
 exit "$virheita"

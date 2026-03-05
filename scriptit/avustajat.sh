@@ -2,6 +2,9 @@
 
 set -euo pipefail
 
+LOKIT=/var/log/sovelluslokit
+PORTIT=/home/lauri/nginx/porttinumerot.txt
+
 tee_koko_domain() {
     domain="$1"
     record="$2"
@@ -111,23 +114,8 @@ rakenna_nginx_conf() {
 
 declare -i virheita=0
 
-LOKIT=/var/log/sovelluslokit
-
 testi_echo() {
     echo "${0##*/}: $@" >&2	
-}
-
-alusta_kayttaja_ja_domain() {
-    kayttaja="$1"
-    domain="$2"
-    if "$3"; then
-	lisaa_record="-r"
-    else
-	lisaa_record=
-    fi
-
-    # adduser -D "$kayttaja"
-    lisaa-domain.sh $lisaa_record "$kayttaja" "$domain"
 }
 
 onhan_olemassa() {

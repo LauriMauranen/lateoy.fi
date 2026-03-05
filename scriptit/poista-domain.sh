@@ -6,7 +6,7 @@ while getopts "h" flag; do
     case "${flag}" in
         h) echo "Käyttö: poista-domain domain" 
 	   echo
-	   echo "Poistaa domainin ja sen a-recordit"
+	   echo "Poistaa domainin ja sen recordien kansiot."
 	   echo
 	   echo "  -h            Tulosta tämä viesti."	
 	   exit 0
@@ -16,7 +16,7 @@ done
 
 domain="$1"
 
-log="/var/log/sovelluslokit/$domain"
+log="$LOKIT/$domain"
 
 recordit=
 [[ -d "$log" ]] && recordit=$(ls -A1 "$log")
@@ -25,10 +25,8 @@ rm -rf "$log"
 
 for record in $recordit; do
     if [[ "$domain" == "$record" ]]; then
-	poista-a-record.sh -k "$record" "$domain" 
+	poista-a-record.sh "$record" "$domain" 
     elif [[ ! -z "$record" ]]; then
-	poista-a-record.sh -k "${record%%.*}" "$domain" 
+	poista-a-record.sh "${record%%.*}" "$domain" 
     fi
 done
-
-poista_domain_linodesta "$domain"

@@ -1,21 +1,18 @@
-FROM docker.io/mgoltzsche/podman:latest
+FROM docker.io/ubuntu:24.04
 
-RUN apk update
-RUN apk add bash py3-pip parallel
-
-RUN pip3 install podman-compose --break-system-packages
-
-RUN adduser -s /bin/bash -D lauri
-RUN echo "lauri:100000:65535" >> /etc/subuid
-RUN echo "lauri:100000:65535" >> /etc/subgid
-RUN su lauri && printf 'will cite\n' | parallel --citation && exit
+RUN apt update && apt install -y parallel
+RUN useradd -m lauri
 
 WORKDIR /home/lauri
 
 RUN mkdir /var/log/sovelluslokit && chown lauri /var/log/sovelluslokit
+RUN mkdir /www-data && chown lauri /www-data
+
 RUN mkdir -p nginx/conf.d lateoy.fi
 COPY conf.d lateoy.fi/conf.d
+
 RUN bash -c 'for i in {8000..8999}; do echo "$i" >> nginx/porttinumerot.txt; done'
+RUN chown -R lauri nginx
 
 COPY scriptit /usr/local/bin
 RUN chmod a+x /usr/local/bin -R

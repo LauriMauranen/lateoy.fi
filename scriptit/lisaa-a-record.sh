@@ -11,7 +11,7 @@ while getopts "hp" flag; do
     case "${flag}" in
         h) echo "Käyttö: lisaa-a-record [asetukset] kayttaja domain record" 
 	   echo
-	   echo "Lisää A-recordin domainille Linodeen ja tekee sille nginx-konfiguraation ja tarvittavat kansiot ja päivittää nginx-kontin."
+	   echo "Lisää recordille nginx-konfiguraation ja tarvittavat kansiot."
 	   echo
 	   echo "  -h            Tulosta tämä viesti."	
 	   echo "  -p            Aseta backend portti jos saatavilla."	
@@ -31,7 +31,7 @@ koko_domain=$(tee_koko_domain "$domain" "$record")
 # kansiot
 
 data="/www-data/$koko_domain"
-log="/var/log/sovelluslokit/$domain/$koko_domain"
+log="$LOKIT/$domain/$koko_domain"
 
 mkdir -p -v "$data" "$log/nginx"
 echo "Terve $kayttaja!" > "$data/index.html"
@@ -40,9 +40,7 @@ if ! "$testiajo"; then
     chown "$kayttaja" "$data" "$log" -R
 fi
 
-portit=/home/lauri/nginx/porttinumerot.txt
-
-backend_portti="$(ota_portti_tiedostosta "$portit" "$backend_portti")"
+backend_portti="$(ota_portti_tiedostosta "$PORTIT" "$backend_portti")"
 [[ -z "$backend_portti" ]] && echo "Portin numeroa ei saatu!" && exit 1
 
 nginx_conf="/home/lauri/nginx/conf.d/$koko_domain.conf"
@@ -51,9 +49,3 @@ nginx_template=/home/lauri/lateoy.fi/conf.d/user-template
 rakenna_nginx_conf "$domain" "$koko_domain" "$backend_portti" "$nginx_template" \
     > "$nginx_conf"
 chown lauri "$nginx_conf"
-
-ip=172.234.123.168 
-email=lauri.mauranen@gmail.com
-
-domain_id=$(hae_domain_id_linodesta "$domain")
-domains_komento records-create --name "$record" --type A --target "$ip" "$domain_id"
