@@ -8,7 +8,7 @@ while getopts "hk" flag; do
     case "${flag}" in
         h) echo "Käyttö: poista-a-record [asetukset] a-record domain" 
 	   echo
-	   echo "Poistaa a-recordin kansiot ja tiedostot."
+	   echo "Poistaa a-recordin lokit ja nginx-konfiguraation. Ei koske www-data -kansioon!"
 	   echo
 	   echo "  -h            Tulosta tämä viesti."	
 	   exit 0
@@ -23,10 +23,9 @@ domain="${@:$OPTIND+1:1}"
 
 koko_domain=$(tee_koko_domain "$domain" "$record")
 
-data="/www-data/$koko_domain"
 log="$LOKIT/$domain/$koko_domain"
 
-nginx_conf="/home/lauri/nginx/conf.d/$koko_domain.conf"
+nginx_conf="$NGINX_CONFD/$koko_domain.conf"
 [[ ! -e "$nginx_conf" ]] && nginx_conf="$nginx_conf.error"
 
 if [[ -e "$nginx_conf" ]]; then
@@ -41,6 +40,5 @@ if [[ -e "$nginx_conf" ]]; then
     fi
 fi
 
-rm -rfv "$data"
 rm -rfv "$log"
 rm -rfv "$nginx_conf"

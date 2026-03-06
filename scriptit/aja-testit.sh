@@ -53,6 +53,8 @@ else
 fi
 
 export TESTIAJO=true
+export PATH="$PATH:/sovellus/scriptit"
+
 cd "$testikansio"
 echo "Ajetaan testit $(echo $testit)"
 

@@ -4,6 +4,7 @@ set -euo pipefail
 
 LOKIT=/var/log/sovelluslokit
 PORTIT=/home/lauri/nginx/porttinumerot.txt
+NGINX_CONFD=/home/lauri/nginx/conf.d
 
 tee_koko_domain() {
     domain="$1"
@@ -63,7 +64,7 @@ rakenna_nginx_conf() {
     local sed_1="s/{{ domain }}/$domain/g"
     local sed_2="s/{{ koko-domain }}/$koko_domain/g"
     local sed_3="s/{{ backend-port }}/$backend_portti/g"
-    local sed_4="s/{{ lokit }}/$lokit/g"
+    local sed_4="s/{{ lokit }}/${lokit//\//\\/}/g"
 
     sed -e "$sed_1" -e "$sed_2" -e "$sed_3" -e "$sed_4" "$nginx_template"
 }
@@ -80,14 +81,14 @@ testi_echo() {
 
 onhan_olemassa() {
     if [[ ! -e "$1" ]]; then
-	testi_echo "Kansio $1 puuttuu!"
+	testi_echo "Kansio/tiedosto $1 puuttuu!"
 	virheita+=1
     fi
 }
 
 eihan_ole_olemassa() {
     if [[ -e "$1" ]]; then
-	testi_echo "Kansio $1 on olemassa!"
+	testi_echo "Kansio/tiedosto $1 on olemassa!"
 	virheita+=1
     fi
 }

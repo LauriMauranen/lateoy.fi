@@ -21,9 +21,9 @@ if ! poista-domain.sh "$domain"; then
     virheita+=1
 fi
 
-eihan_ole_olemassa "/www-data/$domain"
-eihan_ole_olemassa "/www-data/$record.$domain"
 eihan_ole_olemassa "$LOKIT/$domain"
+eihan_ole_olemassa "$NGINX_CONFD/$domain.conf"
+eihan_ole_olemassa "$NGINX_CONFD/$record.$domain.conf"
 
 
 exit "$virheita"

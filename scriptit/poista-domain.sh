@@ -6,7 +6,7 @@ while getopts "h" flag; do
     case "${flag}" in
         h) echo "Käyttö: poista-domain domain" 
 	   echo
-	   echo "Poistaa domainin ja sen recordien kansiot."
+	   echo "Poistaa domainin ja sen recordien kansiot paitsi www-data -kansiosta!."
 	   echo
 	   echo "  -h            Tulosta tämä viesti."	
 	   exit 0
