@@ -33,7 +33,9 @@ log="$LOKIT/$domain/$koko_domain"
 mkdir -p -v "$data" "$log/nginx"
 echo "Terve $kayttaja!" > "$data/index.html"
 
-chown "$kayttaja" "$data" "$log" -R
+chown "$kayttaja" "$data" -R
+chown "lauri:$kayttaja" "$log" -R
+chmod 760 "$log" -R
 
 backend_portti="$(ota_portti_tiedostosta "$PORTIT" "$backend_portti")"
 [[ -z "$backend_portti" ]] && echo "Portin numeroa ei saatu!" && exit 1

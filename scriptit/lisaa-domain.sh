@@ -19,5 +19,5 @@ domain="${@:$OPTIND+1:1}"
 
 log="$LOKIT/$domain"
 
-mkdir -v "$log"
-chown "$kayttaja" "$log" -R
+mkdir -v -m 760 "$log"
+chown "lauri:$kayttaja" "$log" -R
