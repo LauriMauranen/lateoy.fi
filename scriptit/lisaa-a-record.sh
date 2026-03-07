@@ -2,11 +2,13 @@
 
 source avustajat.sh
 
+if ! tarkista_root; then exit 1; fi
+
 backend_portti=
 
 while getopts "hp" flag; do
     case "${flag}" in
-        h) echo "Käyttö: lisaa-a-record [asetukset] kayttaja domain record" 
+        h) echo "Käyttö: lisaa-a-record.sh [asetukset] kayttaja domain a-record" 
 	   echo
 	   echo "Lisää recordille nginx-konfiguraation ja tarvittavat kansiot."
 	   echo
@@ -38,9 +40,7 @@ log="$LOKIT/$domain/$koko_domain"
 mkdir -p -v "$data" "$log/nginx"
 echo "Terve $kayttaja!" > "$data/index.html"
 
-chown "$kayttaja" "$data" -R
-chown "lauri:$kayttaja" "$log" -R
-chmod 760 "$log" -R
+chown "$kayttaja" "$data" "$log" -R
 
 backend_portti="$(ota_portti_tiedostosta "$PORTIT" "$backend_portti")"
 [[ -z "$backend_portti" ]] && echo "Portin numeroa ei saatu!" && exit 1

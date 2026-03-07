@@ -84,6 +84,13 @@ rakenna_nginx_conf() {
     sed -e "$sed_1" -e "$sed_2" -e "$sed_3" -e "$sed_4" "$nginx_template"
 }
 
+tarkista_root() {
+    if [[ "$(whoami)" != root ]]; then
+	echo "Aja komento pääkäyttäjänä!"
+	return 1
+    fi
+}
+
 
 # testeihin
 

@@ -2,9 +2,11 @@
 
 source avustajat.sh
 
+if ! tarkista_root; then exit 1; fi
+
 while getopts "h" flag; do
     case "${flag}" in
-        h) echo "Käyttö: lisaa-domain-loki [asetukset] kayttaja domain" 
+        h) echo "Käyttö: lisaa-domain-loki.sh [asetukset] kayttaja domain" 
 	   echo
 	   echo "Lisää käyttäjän domainille lokitus-kansion."
 	   echo
@@ -24,5 +26,5 @@ fi
 
 log="$LOKIT/$domain"
 
-mkdir -v -m 760 "$log"
-chown "lauri:$kayttaja" "$log" -R
+mkdir -v "$log"
+chown "$kayttaja" "$log"

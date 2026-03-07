@@ -2,9 +2,11 @@
 
 source avustajat.sh
 
+if ! tarkista_root; then exit 1; fi
+
 while getopts "h" flag; do
     case "${flag}" in
-        h) echo "Käyttö: poista-domain domain" 
+        h) echo "Käyttö: poista-domain.sh domain" 
 	   echo
 	   echo "Poistaa domainin ja sen recordien kansiot paitsi www-data -kansiosta!."
 	   echo

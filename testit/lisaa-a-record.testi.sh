@@ -9,7 +9,7 @@ nginx_conf=/home/lauri/nginx/conf.d
 
 # alustus
 
-lisaa-domain.sh  "$kayttaja" "$domain"
+lisaa-domain-loki.sh  "$kayttaja" "$domain"
 
 set +e
 

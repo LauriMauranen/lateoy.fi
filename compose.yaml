@@ -15,7 +15,6 @@ services:
   testit:
     build: 
       dockerfile: ./ContainerfileTestit
-    user: lauri
     container_name: testit
     volumes:
       - /home/lauri/projektit/lateoy.fi:/sovellus:ro

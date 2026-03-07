@@ -2,11 +2,13 @@
 
 source avustajat.sh
 
+if ! tarkista_root; then exit 1; fi
+
 poista_linodesta=true
 
 while getopts "hk" flag; do
     case "${flag}" in
-        h) echo "Käyttö: poista-a-record [asetukset] a-record domain" 
+        h) echo "Käyttö: poista-a-record.sh [asetukset] a-record domain" 
 	   echo
 	   echo "Poistaa a-recordin lokit ja nginx-konfiguraation. Ei koske www-data -kansioon!"
 	   echo
