@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -euo pipefail
+
 source avustajat.sh
 
 backend_portti=
