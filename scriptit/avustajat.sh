@@ -53,10 +53,25 @@ ota_portti_tiedostosta() {
     echo $portti
 }
 
+laita_portti_takaisin() {
+    nginx_conf="$1"
+    koko_domain="$2"
+
+    local portti="$(grep -P "proxy_pass http://$koko_domain:\d{4};" "$nginx_conf" || :)"
+    local portti="${portti##*:}"
+    local portti="${portti%;}"
+
+    if [[ -z "$portti" ]]; then
+	echo "Portin etsiminen tiedostosta $nginx_conf epäonnistui!" >&2
+    else 
+	echo "$portti"
+    fi
+}
+
 rakenna_nginx_conf() {
     local domain="$1"
     local koko_domain="$2"
-    local backend_port="$3"
+    local backend_portti="$3"
     local nginx_template="$4"
 
     local lokit="$LOKIT/$domain/$koko_domain/nginx"

@@ -42,9 +42,23 @@ if [[ "$p" != 8004 ]]; then
     virheita+=1
 fi
 
+# 2
+
+conf=/tmp/testitmp/nginx_conf
+template=/home/lauri/lateoy.fi/conf.d/user-template
+
+rakenna_nginx_conf 1 1 1234 "$template" > "$conf"
+
+p="$(laita_portti_takaisin "$conf" 1)"
+if [[ "$p" != 1234 ]]; then
+    portti_echo 1234 "$p"
+    virheita+=1
+fi
+
 # siivous
 
 rm "$tiedosto"
+rm "$conf"
 
 
 exit "$virheita"

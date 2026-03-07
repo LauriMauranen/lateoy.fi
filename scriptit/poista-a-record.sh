@@ -29,15 +29,7 @@ nginx_conf="$NGINX_CONFD/$koko_domain.conf"
 [[ ! -e "$nginx_conf" ]] && nginx_conf="$nginx_conf.error"
 
 if [[ -e "$nginx_conf" ]]; then
-    portti="$(grep "proxy_pass http://$record:\d\d\d\d;" "$nginx_conf" || :)"
-    portti="${portti##*:}"
-    portti="${portti%;}"
-
-    if [[ -z "$portti" ]]; then
-	echo "Portin etsiminen tiedostosta $nginx_conf epäonnistui!" >&2
-    else 
-	echo "$portti" >> "$PORTIT"
-    fi
+    laita_portti_takaisin "$nginx_conf" "$koko_domain" >> "$PORTIT"
 fi
 
 rm -rfv "$log"
