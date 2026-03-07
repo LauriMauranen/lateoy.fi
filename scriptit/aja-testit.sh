@@ -20,7 +20,7 @@ verboosi=false
 
 while getopts "hv" flag; do
     case "${flag}" in
-        h) echo "Käyttö: aja-testit [asetukset] testi..." 
+        h) echo "Käyttö: aja-testit [asetukset] [testi...]" 
 	   echo
 	   echo "Ajaa testit."
 	   echo

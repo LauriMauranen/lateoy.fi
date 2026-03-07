@@ -26,6 +26,11 @@ done
 
 # 2
 
+if lisaa-a-record.sh; then
+    testi_echo "lisaa-a-record ilman argumentteja ei palauttanut virhettä!"
+    virheita+=1
+fi
+
 if ! lisaa-a-record.sh "$kayttaja" "$domain" "$domain"; then
     testi_echo "lisaa-a-record palautti virheen!"
     virheita+=1

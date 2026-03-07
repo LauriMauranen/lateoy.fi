@@ -16,6 +16,11 @@ set +e
 
 # 1
 
+if poista-domain.sh; then
+    testi_echo "poista-domain.sh ilman argumentteja ei palauttanut virhettä!"
+    virheita+=1
+fi
+
 if ! poista-domain.sh "$domain"; then
     testi_echo "poista-domain.sh palautti virheen!"
     virheita+=1

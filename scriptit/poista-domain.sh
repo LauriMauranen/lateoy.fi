@@ -1,7 +1,5 @@
 #!/bin/bash
 
-set -euo pipefail
-
 source avustajat.sh
 
 while getopts "h" flag; do

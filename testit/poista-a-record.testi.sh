@@ -15,6 +15,11 @@ lisaa-a-record.sh "$kayttaja" "$domain" "$record"
 
 set +e
 
+if poista-a-record.sh; then
+    testi_echo "poista-a-record.sh ilman argumentteja ei palauttanut virhettä!"
+    virheita+=1
+fi
+
 if ! poista-a-record.sh "$domain" "$domain"; then
     testi_echo "poista-a-record.sh palautti virheen!"
     virheita+=1

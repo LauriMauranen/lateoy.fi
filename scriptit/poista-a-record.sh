@@ -1,7 +1,5 @@
 #!/bin/bash
 
-set -euo pipefail
-
 source avustajat.sh
 
 poista_linodesta=true
@@ -22,6 +20,11 @@ done
 
 record="${@:$OPTIND:1}"
 domain="${@:$OPTIND+1:1}"
+
+if [[ -z "$record" || -z "$domain" ]]; then
+    echo "'a-record' ja 'domain' ovat pakollisia!"
+    exit 1 
+fi
 
 koko_domain=$(tee_koko_domain "$domain" "$record")
 

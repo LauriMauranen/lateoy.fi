@@ -1,7 +1,5 @@
 #!/bin/bash
 
-set -euo pipefail
-
 source avustajat.sh
 
 while getopts "h" flag; do
@@ -18,6 +16,11 @@ done
 
 kayttaja="${@:$OPTIND:1}"
 domain="${@:$OPTIND+1:1}"
+
+if [[ -z "$kayttaja" || -z "$domain" ]]; then
+    echo "'kayttaja' ja 'domain' ovat pakollisia!"
+    exit 1 
+fi
 
 log="$LOKIT/$domain"
 
