@@ -37,7 +37,7 @@ if ! lisaa-a-record.sh "$kayttaja" "$domain" "$domain"; then
 fi
 
 onhan_olemassa "/www-data/$domain"
-onhan_olemassa "$LOKIT/$domain/$domain"
+onhan_olemassa "$LOKIT/$domain"
 onhan_olemassa "$nginx_conf/$domain.conf"
 
 # 3
@@ -48,7 +48,7 @@ if ! lisaa-a-record.sh "$kayttaja" "$domain" "$record"; then
 fi
 
 onhan_olemassa "/www-data/$record.$domain"
-onhan_olemassa "$LOKIT/$domain/$record.$domain"
+onhan_olemassa "$LOKIT/$record.$domain"
 onhan_olemassa "$nginx_conf/$record.$domain.conf"
 
 

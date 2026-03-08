@@ -18,14 +18,9 @@ done
 
 domain="$1"
 
-log="$LOKIT/$domain"
-
-recordit=
-[[ -d "$log" ]] && recordit=$(ls -A1 "$log")
-
-rm -rf "$log"
-
-for record in $recordit; do
+# recordit=$(ls -A1 "$log")
+for record in $LOKIT/*$domain; do
+    record="${record##*/}"
     if [[ "$domain" == "$record" ]]; then
 	poista-a-record.sh "$record" "$domain" 
     elif [[ ! -z "$record" ]]; then

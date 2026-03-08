@@ -26,7 +26,7 @@ if ! poista-a-record.sh "$domain" "$domain"; then
 fi
 
 eihan_ole_olemassa "/www-data/$domain"
-eihan_ole_olemassa "$LOKIT/$domain/$domain"
+eihan_ole_olemassa "$LOKIT/$domain"
 eihan_ole_olemassa "$nginx_conf/$domain.conf"
 
 
@@ -36,7 +36,7 @@ if ! poista-a-record.sh "$record" "$domain"; then
 fi
 
 eihan_ole_olemassa "/www-data/$record.$domain"
-eihan_ole_olemassa "$LOKIT/$domain/$record.$domain"
+eihan_ole_olemassa "$LOKIT/$record.$domain"
 eihan_ole_olemassa "$nginx_conf/$record.$domain.conf"
 
 

@@ -33,6 +33,6 @@ if [[ -e "$nginx_conf" ]]; then
     laita_portti_takaisin "$nginx_conf" "$koko_domain" >> "$PORTIT"
 fi
 
-rm -rfv "$LOKIT/$domain/$koko_domain"
+rm -rfv "$LOKIT/$koko_domain"
 rm -rfv "/www-data/$koko_domain"
 rm -rfv "$nginx_conf"

@@ -35,7 +35,7 @@ koko_domain=$(tee_koko_domain "$domain" "$record")
 # kansiot
 
 data="/www-data/$koko_domain"
-log="$LOKIT/$domain/$koko_domain"
+log="$LOKIT/$koko_domain"
 
 mkdir -p -v "$data" "$log/nginx"
 echo "Terve $kayttaja!" > "$data/index.html"
