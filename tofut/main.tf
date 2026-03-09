@@ -2,7 +2,7 @@ terraform {
   required_providers {
     linode = {
       source  = "linode/linode"
-      version = "2.21.0"
+      version = "3.9.0"
     }
   }
 }
@@ -30,6 +30,8 @@ variable "domainit" {
       target = string
     })), [])
   }))
+
+  default = {}
 }
 
 resource "linode_domain" "domain" {
