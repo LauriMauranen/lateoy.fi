@@ -12,18 +12,18 @@ domainit = {
 		]
 	}
 
-	/* "aaroaho.fi" = { */
-	/* 	recordit = [ */
-	/* 		{ */
-	/* 			name = "" */
-	/* 			record_type = "A" */
-	/* 		}, */
-			/* { */
-			/* 	name = "www" */
-			/* 	record_type = "A" */
-			/* } */
-	/* 	] */
-	/* } */
+	"aaroaho.fi" = {
+		recordit = [
+			{
+				name = ""
+				record_type = "A"
+			},
+			{
+				name = "www"
+				record_type = "A"
+			}
+		]
+	}
 
 	"vinskis-great-button-game.fi" = {
 		recordit = [

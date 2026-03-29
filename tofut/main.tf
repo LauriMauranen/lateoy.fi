@@ -13,7 +13,7 @@ locals {
       for record in d_tiedot.recordit : [
         for target in setunion(
           linode_instance.instance1.ipv4, 
-          toset([linode_instance.instance1.ipv6])
+          toset([replace(linode_instance.instance1.ipv6, "/128", "")])
         ) : {
           domain = domain
           domain_id = linode_domain.domain[domain].id
