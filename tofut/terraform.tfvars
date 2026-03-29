@@ -4,32 +4,36 @@ domainit = {
 			{
 				name = ""
 				record_type = "A"
-				target = "lateoy.fi"
 			},
 			{
 				name = "tuomari"
 				record_type = "A"
-				target = "lateoy.fi"
 			}
 		]
 	}
 
-	"aaroaho.fi" = {
-		recordit = [
-			{
-				name = ""
-				record_type = "A"
-				target = "aaroaho.fi"
-			}
-		]
-	}
+	/* "aaroaho.fi" = { */
+	/* 	recordit = [ */
+	/* 		{ */
+	/* 			name = "" */
+	/* 			record_type = "A" */
+	/* 		}, */
+			/* { */
+			/* 	name = "www" */
+			/* 	record_type = "A" */
+			/* } */
+	/* 	] */
+	/* } */
 
 	"vinskis-great-button-game.fi" = {
 		recordit = [
 			{
 				name = ""
 				record_type = "A"
-				target = "vinskis-great-button-game.fi"
+			},
+			{
+				name = "www"
+				record_type = "A"
 			}
 		]
 	}
