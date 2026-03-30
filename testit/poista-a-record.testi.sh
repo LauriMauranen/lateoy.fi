@@ -12,6 +12,13 @@ nginx_conf=/home/lauri/nginx/conf.d
 lisaa-a-record.sh "$kayttaja" "$domain" "$domain"
 lisaa-a-record.sh "$kayttaja" "$domain" "$record"
 
+onhan_olemassa "/www-data/$domain"
+onhan_olemassa "$LOKIT/$domain"
+onhan_olemassa "$nginx_conf/$domain.conf"
+onhan_olemassa "/www-data/$record.$domain"
+onhan_olemassa "$LOKIT/$record.$domain"
+onhan_olemassa "$nginx_conf/$record.$domain.conf"
+
 set +e
 
 if poista-a-record.sh; then

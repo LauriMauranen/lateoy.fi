@@ -11,6 +11,10 @@ record="$(satunnainen_mj)"
 lisaa-a-record.sh "$kayttaja" "$domain" "$domain"
 lisaa-a-record.sh "$kayttaja" "$domain" "$record"
 
+onhan_olemassa "$LOKIT/$domain"
+onhan_olemassa "$NGINX_CONFD/$domain.conf"
+onhan_olemassa "$NGINX_CONFD/$record.$domain.conf"
+
 set +e
 
 # 1
