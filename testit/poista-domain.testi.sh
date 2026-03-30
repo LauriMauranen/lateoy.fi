@@ -8,7 +8,6 @@ record="$(satunnainen_mj)"
 
 # alustus
 
-lisaa-domain-loki.sh "$kayttaja" "$domain"
 lisaa-a-record.sh "$kayttaja" "$domain" "$domain"
 lisaa-a-record.sh "$kayttaja" "$domain" "$record"
 

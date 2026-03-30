@@ -4,7 +4,7 @@ set -euo pipefail
 
 while getopts "h" flag; do
     case "${flag}" in
-        h) echo "Käyttö: alusta-kayttaja kayttaja" 
+        h) echo "Käyttö: alusta-kayttaja.sh kayttaja" 
 	   echo
 	   echo "Luo käyttäjälle tarvittavat kansiot."
 	   echo

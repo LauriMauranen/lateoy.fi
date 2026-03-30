@@ -7,10 +7,6 @@ domain="$(satunnainen_mj).com"
 record="$(satunnainen_mj)"
 nginx_conf=/home/lauri/nginx/conf.d
 
-# alustus
-
-lisaa-domain-loki.sh  "$kayttaja" "$domain"
-
 set +e
 
 # 1
