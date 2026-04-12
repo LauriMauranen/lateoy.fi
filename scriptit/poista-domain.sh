@@ -2,8 +2,6 @@
 
 source avustajat.sh
 
-if ! tarkista_root; then exit 1; fi
-
 while getopts "h" flag; do
     case "${flag}" in
         h) echo "Käyttö: poista-domain.sh domain" 
@@ -15,6 +13,8 @@ while getopts "h" flag; do
 		;;
     esac
 done
+
+if ! tarkista_root; then exit 1; fi
 
 domain="$1"
 

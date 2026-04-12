@@ -2,8 +2,6 @@
 
 source avustajat.sh
 
-if ! tarkista_root; then exit 1; fi
-
 backend_portti=
 
 while getopts "hp" flag; do
@@ -20,6 +18,8 @@ while getopts "hp" flag; do
 		;;
     esac
 done
+
+if ! tarkista_root; then exit 1; fi
 
 kayttaja="${@:$OPTIND:1}"
 domain="${@:$OPTIND+1:1}"

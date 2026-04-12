@@ -14,6 +14,8 @@ while getopts "h" flag; do
     esac
 done
 
+if ! tarkista_root; then exit 1; fi
+
 kayttaja="$1"
 
 # adduser -s /bin/bash -G users -D "$kayttaja"
