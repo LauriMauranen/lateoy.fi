@@ -8,6 +8,10 @@ domainit = {
 			{
 				name = "tuomari"
 				record_type = "A"
+			},
+			{
+				name = "aaro"
+				record_type = "A"
 			}
 		]
 	}

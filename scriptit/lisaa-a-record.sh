@@ -50,3 +50,5 @@ nginx_template=/home/lauri/lateoy.fi/conf.d/user-template
 
 rakenna_nginx_conf "$domain" "$koko_domain" "$backend_portti" "$nginx_template" \
     > "$nginx_conf"
+
+echo "Luotiin tiedosto $nginx_conf"
