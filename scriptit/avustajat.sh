@@ -74,7 +74,7 @@ rakenna_nginx_conf() {
     local backend_portti="$3"
     local nginx_template="$4"
 
-    local lokit="$LOKIT/$domain/$koko_domain/nginx"
+    local lokit="$LOKIT/$koko_domain/nginx"
 
     local sed_1="s/{{ domain }}/$domain/g"
     local sed_2="s/{{ koko-domain }}/$koko_domain/g"
