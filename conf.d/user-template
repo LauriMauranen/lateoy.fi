@@ -20,14 +20,16 @@ server {
 	root /www-data/{{ koko-domain }};
 
 	# ota pois kun asiat toimii
-	add_header Cache-Control 'no-store';
+	# add_header Cache-Control 'no-store';
 
         location = / {
 		try_files /index.html @backend;
         }
 
         location / {
-		try_files $uri @backend;
+		# TODO entä jos löytyy index.html ja @backend on käytössä,
+		# silloin tämä ei koskaan pääse @backend 
+		try_files $uri /index.html @backend;
         }
 
         location @backend {
