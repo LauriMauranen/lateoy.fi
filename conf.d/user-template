@@ -26,13 +26,17 @@ server {
 		try_files /index.html @backend;
         }
 
+	# spa:n pitää käyttää tätä, muuten palauttaa index.html, katso seuraava location
+        location /api/ {
+		try_files "" @backend;
+        }
+
         location / {
-		# TODO entä jos löytyy index.html ja @backend on käytössä,
-		# silloin tämä ei koskaan pääse @backend 
 		try_files $uri /index.html @backend;
         }
 
         location @backend {
+		# TODO entä jos backend on toisella serverillä?
                 proxy_pass http://{{ koko-domain }}:{{ backend-port }};
                 proxy_set_header Host              $host;
                 proxy_set_header X-Forwarded-For   $proxy_add_x_forwarded_for;
