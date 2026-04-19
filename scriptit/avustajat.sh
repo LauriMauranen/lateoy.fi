@@ -7,13 +7,13 @@ PORTIT=/home/lauri/nginx/porttinumerot.txt
 NGINX_CONFD=/home/lauri/nginx/conf.d
 
 tee_koko_domain() {
-    domain="$1"
-    record="$2"
+    local domain="$1"
+    local record="$2"
 
     if [[ "$record" == "$domain" ]]; then
-	koko_domain="$domain"
+	local koko_domain="$domain"
     elif [[ "$record" =~ ^[a-zA-Z0-9_-]+$ ]]; then
-	koko_domain="$record.$domain"
+	local koko_domain="$record.$domain"
     else
 	echo "Record on epäkelpo!" >&2
 	return 1
@@ -54,8 +54,8 @@ ota_portti_tiedostosta() {
 }
 
 laita_portti_takaisin() {
-    nginx_conf="$1"
-    koko_domain="$2"
+    local nginx_conf="$1"
+    local koko_domain="$2"
 
     local portti="$(grep -P "proxy_pass http://$koko_domain:\d{4};" "$nginx_conf" || :)"
     local portti="${portti##*:}"
