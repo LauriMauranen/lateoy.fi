@@ -4,7 +4,7 @@ source avustajat.sh
 
 backend_portti=
 
-while getopts "hp" flag; do
+while getopts "hp:" flag; do
     case "${flag}" in
         h) echo "Käyttö: lisaa-a-record.sh [asetukset] kayttaja domain a-record" 
 	   echo
