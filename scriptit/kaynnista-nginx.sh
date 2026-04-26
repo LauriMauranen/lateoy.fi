@@ -2,4 +2,4 @@
 
 set -ueo pipefail
 
-sudo podman compose run -d --service-ports nginx
+sudo podman compose run --name nginx -d --service-ports nginx
