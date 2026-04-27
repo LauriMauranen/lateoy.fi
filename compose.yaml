@@ -17,7 +17,7 @@ services:
       dockerfile: ./ContainerfileTestit
     container_name: testit
     volumes:
-      - /home/lauri/projektit/lateoy.fi:/sovellus:ro
+      - /home/lauri/projektit/lateoy.fi:/home/lauri/lateoy.fi
 
   tofu:
     build: 

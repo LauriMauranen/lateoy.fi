@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source /sovellus/scriptit/avustajat.sh
+source avustajat.sh
 
 echo "testi-lapi.testix.sh teksti"
 

@@ -30,7 +30,7 @@ nginx_conf="$NGINX_CONFD/$koko_domain.conf"
 [[ ! -e "$nginx_conf" ]] && nginx_conf="$nginx_conf.error"
 
 if [[ -e "$nginx_conf" ]]; then
-    laita_portti_takaisin "$nginx_conf" "$koko_domain" >> "$PORTIT"
+    laita_portti_takaisin "$nginx_conf" >> "$PORTIT"
 fi
 
 rm -rfv "$LOKIT/$koko_domain"

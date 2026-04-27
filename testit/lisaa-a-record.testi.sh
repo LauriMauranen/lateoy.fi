@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source /sovellus/scriptit/avustajat.sh
+source avustajat.sh
 
 kayttaja=lauri
 domain="$(satunnainen_mj).com"

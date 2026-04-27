@@ -9,9 +9,8 @@ RUN mkdir /www-data
 WORKDIR /home/lauri
 
 RUN mkdir -p nginx/conf.d lateoy.fi
-COPY conf.d lateoy.fi/conf.d
 RUN bash -c 'for i in {8000..8999}; do echo "$i" >> nginx/porttinumerot.txt; done'
 
-WORKDIR /sovellus
+WORKDIR ./lateoy.fi
 
 ENTRYPOINT ["./scriptit/aja-testit.sh"]

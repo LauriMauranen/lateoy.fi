@@ -36,7 +36,7 @@ done
 testit="${@:OPTIND:${#@}}"
 
 stdout_kansio=/tmp/testitmp/aja-testit-stdout
-testikansio=/sovellus/testit
+projektikansio=/home/lauri/lateoy.fi
 
 if ! "$testiajo"; then
     mkdir -p "$stdout_kansio"
@@ -53,9 +53,9 @@ else
 fi
 
 export TESTIAJO=true
-export PATH="$PATH:/sovellus/scriptit"
+export PATH="$PATH:$projektikansio/scriptit"
 
-cd "$testikansio"
+cd "$projektikansio/testit"
 echo "Ajetaan testit $(echo $testit)"
 
 while read -r tulos; do

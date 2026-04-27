@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source /sovellus/scriptit/avustajat.sh
+source avustajat.sh
 
 portti_echo() {
     testi_echo "piti olla portti '$1', olikin '$2'"
@@ -49,7 +49,7 @@ template=/home/lauri/lateoy.fi/conf.d/user-template
 
 rakenna_nginx_conf 1 1 1234 "$template" > "$conf"
 
-p="$(laita_portti_takaisin "$conf" 1)"
+p="$(laita_portti_takaisin "$conf")"
 if [[ "$p" != 1234 ]]; then
     portti_echo 1234 "$p"
     virheita+=1

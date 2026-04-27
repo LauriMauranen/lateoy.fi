@@ -37,7 +37,7 @@ server {
 
         location @backend {
 		# TODO entä jos backend on toisella serverillä?
-                proxy_pass http://{{ koko-domain }}:{{ backend-port }};
+                proxy_pass http://{{ backend }};
                 proxy_set_header Host              $host;
                 proxy_set_header X-Forwarded-For   $proxy_add_x_forwarded_for;
                 proxy_set_header X-Real-IP         $remote_addr;

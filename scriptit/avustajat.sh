@@ -5,6 +5,7 @@ set -euo pipefail
 LOKIT=/var/log/sovelluslokit
 PORTIT=/home/lauri/nginx/porttinumerot.txt
 NGINX_CONFD=/home/lauri/nginx/conf.d
+VM_IP=172.234.123.168
 
 tee_koko_domain() {
     local domain="$1"
@@ -55,9 +56,8 @@ ota_portti_tiedostosta() {
 
 laita_portti_takaisin() {
     local nginx_conf="$1"
-    local koko_domain="$2"
 
-    local portti="$(grep -P "proxy_pass http://$koko_domain:\d{4};" "$nginx_conf" || :)"
+    local portti="$(grep -P "proxy_pass http://$VM_IP:\d{4};" "$nginx_conf" || :)"
     local portti="${portti##*:}"
     local portti="${portti%;}"
 
@@ -78,7 +78,7 @@ rakenna_nginx_conf() {
 
     local sed_1="s/{{ domain }}/$domain/g"
     local sed_2="s/{{ koko-domain }}/$koko_domain/g"
-    local sed_3="s/{{ backend-port }}/$backend_portti/g"
+    local sed_3="s/{{ backend }}/$VM_IP:$backend_portti/g"
     local sed_4="s/{{ lokit }}/${lokit//\//\\/}/g"
 
     sed -e "$sed_1" -e "$sed_2" -e "$sed_3" -e "$sed_4" "$nginx_template"
