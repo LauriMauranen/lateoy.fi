@@ -52,3 +52,5 @@ rakenna_nginx_conf "$domain" "$koko_domain" "$backend_portti" "$nginx_template" 
     > "$nginx_conf"
 
 echo "Luotiin tiedosto $nginx_conf"
+echo
+echo "Palomuuriin täytyy avata portti $backend_portti"

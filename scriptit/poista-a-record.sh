@@ -30,9 +30,13 @@ nginx_conf="$NGINX_CONFD/$koko_domain.conf"
 [[ ! -e "$nginx_conf" ]] && nginx_conf="$nginx_conf.error"
 
 if [[ -e "$nginx_conf" ]]; then
-    laita_portti_takaisin "$nginx_conf" >> "$PORTIT"
+    portti="$(laita_portti_takaisin "$nginx_conf")"
+    echo "$portti" >> "$PORTIT"
+    echo "Muista sulkea palomuurista portti $portti"
+    echo
 fi
 
 rm -rfv "$LOKIT/$koko_domain"
 rm -rfv "/www-data/$koko_domain"
 rm -rfv "$nginx_conf"
+
