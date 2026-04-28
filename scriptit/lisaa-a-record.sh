@@ -40,8 +40,6 @@ log="$LOKIT/$koko_domain"
 mkdir -p -v "$data" "$log/nginx"
 echo "Terve $kayttaja!" > "$data/index.html"
 
-chown "$kayttaja" "$data" "$log" -R
-
 backend_portti="$(ota_portti_tiedostosta "$PORTIT" "$backend_portti")"
 [[ -z "$backend_portti" ]] && echo "Portin numeroa ei saatu!" && exit 1
 
@@ -50,6 +48,8 @@ nginx_template=/home/lauri/lateoy.fi/conf.d/user-template
 
 rakenna_nginx_conf "$domain" "$koko_domain" "$backend_portti" "$nginx_template" \
     > "$nginx_conf"
+
+chown "$kayttaja" "$data" "$log" "$nginx_conf" -R
 
 echo "Luotiin tiedosto $nginx_conf"
 echo
