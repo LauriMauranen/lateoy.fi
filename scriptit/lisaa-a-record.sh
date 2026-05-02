@@ -43,6 +43,9 @@ echo "Terve $kayttaja!" > "$data/index.html"
 # nämä käyttäjälle
 chown "$kayttaja" "$data" "$log" -R
 
+# vain käyttäjä voi lukea, turha näyttää muille
+chmod 700 "$log" -R
+
 backend_portti="$(ota_portti_tiedostosta "$PORTIT" "$backend_portti")"
 [[ -z "$backend_portti" ]] && echo "Portin numeroa ei saatu!" && exit 1
 
