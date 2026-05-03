@@ -6,6 +6,7 @@ LOKIT=/var/log/sovelluslokit
 PORTIT=/home/lauri/nginx/porttinumerot.txt
 NGINX_CONFD=/home/lauri/nginx/conf.d
 VM_IP=172.234.123.168
+KOTIKANSIOT=/etc/kotikansiot/
 
 tee_koko_domain() {
     local domain="$1"
