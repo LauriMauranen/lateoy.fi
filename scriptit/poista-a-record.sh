@@ -36,7 +36,7 @@ if [[ -e "$nginx_conf" ]]; then
     echo
 fi
 
-rm -rfv "$LOKIT/$koko_domain"
-rm -rfv "/www-data/$koko_domain"
-rm -rfv "$nginx_conf"
+data="/www-data/$koko_domain"
+umount "$data" 
 
+rm -rfv "$LOKIT/$koko_domain" "$MOUNT_KANSIOT/$data" "$data" "$nginx_conf"

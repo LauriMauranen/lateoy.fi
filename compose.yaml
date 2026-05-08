@@ -16,6 +16,7 @@ services:
     build: 
       dockerfile: ./ContainerfileTestit
     container_name: testit
+    privileged: true
     volumes:
       - /home/lauri/projektit/lateoy.fi:/home/lauri/lateoy.fi
 

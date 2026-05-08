@@ -6,7 +6,28 @@ LOKIT=/var/log/sovelluslokit
 PORTIT=/home/lauri/nginx/porttinumerot.txt
 NGINX_CONFD=/home/lauri/nginx/conf.d
 VM_IP=172.234.123.168
-KOTIKANSIOT=/etc/kotikansiot/
+MOUNT_KANSIOT=/etc/mount-kansiot
+
+
+luo_mount_kansio() {
+    local kansio="$1"
+    local koko="$2"  # (MB)
+
+    local tiedosto="$MOUNT_KANSIOT/$kansio"
+
+    # luodaan datatiedosto ja mountataan se kansioon 
+
+    # mahdolliset uudet kansiot
+    mkdir -pv "${tiedosto%/*}"
+    
+    dd if=/dev/zero of="$tiedosto" bs=1M count="$koko"
+    mkfs.ext4 "$tiedosto"
+
+    mkdir -pv "$kansio"
+
+    mount "$tiedosto" "$kansio"
+    # mount -o loop "$tiedosto" "$kansio"
+}
 
 tee_koko_domain() {
     local domain="$1"
