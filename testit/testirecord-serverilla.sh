@@ -17,12 +17,12 @@ ufw reload
 
 podman exec nginx nginx -s reload
 
-[[ ! "$(curl "$kayttaja.$domain")" =~ "Terve $kayttaja!" ]] && virhe=1
+[[ ! "$(curl "https://$kayttaja.$domain")" =~ "Terve $kayttaja!" ]] && virhe=1
 
 poista-a-record.sh "$kayttaja" "$domain"
 poista-kayttaja.sh "$kayttaja"
 
-ufw deny "$portti"
+ufw delete allow "$portti"
 ufw reload
 
 podman exec nginx nginx -s reload
