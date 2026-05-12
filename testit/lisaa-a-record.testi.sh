@@ -32,7 +32,6 @@ if ! lisaa-a-record.sh "$kayttaja" "$domain" "$domain"; then
 fi
 
 onhan_olemassa "/www-data/$domain"
-onhan_olemassa "$MOUNT_KANSIOT/www-data/$domain"
 onhan_olemassa "$LOKIT/$domain"
 onhan_olemassa "$nginx_conf/$domain.conf"
 
@@ -43,7 +42,6 @@ if ! lisaa-a-record.sh "$kayttaja" "$domain" "$record"; then
 fi
 
 onhan_olemassa "/www-data/$record.$domain"
-onhan_olemassa "$MOUNT_KANSIOT/www-data/$record.$domain"
 onhan_olemassa "$LOKIT/$record.$domain"
 onhan_olemassa "$nginx_conf/$record.$domain.conf"
 
@@ -54,7 +52,6 @@ if ! lisaa-a-record.sh -p 8999 "$kayttaja" "$domain" "matti"; then
 fi
 
 onhan_olemassa "/www-data/matti.$domain"
-onhan_olemassa "$MOUNT_KANSIOT/www-data/matti.$domain"
 onhan_olemassa "$LOKIT/matti.$domain"
 onhan_olemassa "$nginx_conf/matti.$domain.conf"
 

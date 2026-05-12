@@ -2,7 +2,6 @@
 
 source avustajat.sh
 
-dataKansionKokoMB=200
 backend_portti=
 
 while getopts "hp:" flag; do
@@ -38,9 +37,7 @@ koko_domain=$(tee_koko_domain "$domain" "$record")
 data="/www-data/$koko_domain"
 log="$LOKIT/$koko_domain"
 
-mkdir -p -v "$log/nginx"
-
-luo_mount_kansio "$data" "$dataKansionKokoMB"
+mkdir -pv "$log/nginx" "$data"
 echo "Terve $kayttaja!" > "$data/index.html"
 
 # nämä käyttäjälle
