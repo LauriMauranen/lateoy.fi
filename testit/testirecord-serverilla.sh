@@ -17,6 +17,8 @@ ufw reload
 
 podman exec nginx nginx -s reload
 
+sleep 5
+
 [[ ! "$(curl "https://$kayttaja.$domain")" =~ "Terve $kayttaja!" ]] && virhe=1
 
 poista-a-record.sh "$kayttaja" "$domain"
