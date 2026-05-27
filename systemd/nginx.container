@@ -1,0 +1,21 @@
+[Unit]
+Description=Laurin mahtava systeemi
+
+[Container]
+Image=docker.io/nginx:1.29.4-alpine
+ContainerName=nginx
+PublishPort=80:80
+PublishPort=443:443
+Volume=/etc/letsencrypt:/etc/letsencrypt:ro
+Volume=/home/lauri/lateoy.fi/nginx.conf:/etc/nginx/nginx.conf:ro
+Volume=/home/lauri/nginx/conf.d:/etc/nginx/conf.d:ro
+Volume=/var/log:/var/log
+Volume=/www-data:/www-data:ro
+
+[Install]
+WantedBy=default.target
+
+[Service]
+Restart=always
+RestartSec=5
+TimeoutStartSec=900
