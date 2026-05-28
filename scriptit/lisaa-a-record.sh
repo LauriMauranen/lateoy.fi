@@ -40,11 +40,7 @@ log="$LOKIT/$koko_domain"
 mkdir -pv "$log/nginx" "$data"
 echo "Terve $kayttaja!" > "$data/index.html"
 
-# nämä käyttäjälle
-chown "$kayttaja" "$data" "$log" -R
-
-# vain käyttäjä voi lukea, turha näyttää muille
-chmod 700 "$log" -R
+chown "$kayttaja" "$data" -R
 
 backend_portti="$(ota_portti_tiedostosta "$PORTIT" "$backend_portti")"
 [[ -z "$backend_portti" ]] && echo "Portin numeroa ei saatu!" && exit 1
@@ -56,7 +52,7 @@ rakenna_nginx_conf "$domain" "$koko_domain" "$backend_portti" "$nginx_template" 
     > "$nginx_conf"
 
 # minulle
-chown lauri "$nginx_conf"
+chown lauri "$nginx_conf" "$log" -R
 
 echo "Luotiin tiedosto $nginx_conf"
 echo

@@ -41,7 +41,7 @@ luo_mount_kansio "$home" "$kotikansionKokoMB"
 
 useradd "$kayttaja" -s /bin/bash -d "$home"
 
-mkdir -v "$home/.ssh"
+mkdir -v "$home/.ssh" "$home/log"
 touch "$home/.ssh/authorized_keys"
 
 chown "$kayttaja" "$home" -R
