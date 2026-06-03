@@ -45,6 +45,8 @@ chown "$kayttaja" "$data" -R
 backend_portti="$(ota_portti_tiedostosta "$PORTIT" "$backend_portti")"
 [[ -z "$backend_portti" ]] && echo "Portin numeroa ei saatu!" && exit 1
 
+echo "$backend_portti" > "/home/$kayttaja/.$koko_domain-backend-portti"
+
 nginx_conf="/home/lauri/nginx/conf.d/$koko_domain.conf"
 nginx_template=/home/lauri/lateoy.fi/conf.d/user-template
 
