@@ -2,20 +2,21 @@
 
 source avustajat.sh
 
-kotikansionKokoMB=1024
+koko_oletus=1024
+kotikansion_koko_MB=$koko_oletus
 
 while getopts "hs:" flag; do
     case "${flag}" in
-        h) echo "Käyttö: alusta-kayttaja.sh kayttaja" 
+        h) alkuotsikko "kayttaja" 
 	   echo
 	   echo "Luo käyttäjälle mountatut kansiot."
 	   echo
-	   echo "  -s KOKO       Kotikansion koko (MB)."	
+	   echo "  -s KOKO (MB)  Kotikansion koko (oletus $koko_oletus)."	
 	   echo "  -h            Tulosta tämä viesti."	
 	   exit 0
 		;;
 
-	s) kotikansionKokoMB="$OPTARG"
+	s) kotikansion_koko_MB="$OPTARG"
 	    ;;
 
     esac
@@ -25,7 +26,7 @@ if ! tarkista_root; then exit 1; fi
 
 kayttaja="${@:$OPTIND:1}"
 
-if [[ "$kotikansionKokoMB" > 2048 ]]; then
+if [[ "$kotikansion_koko_MB" > 2048 ]]; then
     echo "Kotikansio voi olla max 2G"
     exit 1
 fi
@@ -37,7 +38,7 @@ fi
 
 home="/home/$kayttaja"
 
-luo_mount_kansio "$home" "$kotikansionKokoMB"
+luo_mount_kansio "$home" "$kotikansion_koko_MB"
 
 useradd "$kayttaja" -s /bin/bash -d "$home"
 
@@ -48,5 +49,5 @@ chown "$kayttaja" "$home" -R
 chmod 700 "$home"
 
 echo
-echo "Muista asettaa käyttäjälle salasana!!!"
+echo "Aja seuraavaksi sudo passwd $kayttaja"
 echo

@@ -4,7 +4,7 @@ source avustajat.sh
 
 while getopts "h" flag; do
     case "${flag}" in
-        h) echo "Käyttö: poista-a-record.sh [asetukset] a-record domain" 
+        h) alkuotsikko "a-record domain" 
 	   echo
 	   echo "Poistaa a-recordin kansiot ja tiedostot."
 	   echo
@@ -32,8 +32,9 @@ nginx_conf="$NGINX_CONFD/$koko_domain.conf"
 if [[ -e "$nginx_conf" ]]; then
     portti="$(laita_portti_takaisin "$nginx_conf")"
     echo "$portti" >> "$PORTIT"
-    echo "Muista sulkea palomuurista portti $portti"
-    echo
+    echo "Seuraavaksi aja:"
+    echo "  sudo ufw delete allow $portti"
+    echo "  sudo podman exec nginx nginx -s reload"
 fi
 
 rm -rfv "$LOKIT/$koko_domain" "/www-data/$koko_domain" "$nginx_conf"

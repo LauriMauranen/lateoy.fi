@@ -4,7 +4,7 @@ source avustajat.sh
 
 while getopts "h" flag; do
     case "${flag}" in
-        h) echo "Käyttö: poista-domain.sh domain" 
+        h) alkuotsikko "domain" 
 	   echo
 	   echo "Poistaa domainin ja sen recordien kansiot paitsi www-data -kansiosta!."
 	   echo
@@ -18,7 +18,6 @@ if ! tarkista_root; then exit 1; fi
 
 domain="$1"
 
-# recordit=$(ls -A1 "$log")
 for record in $LOKIT/*$domain; do
     record="${record##*/}"
     if [[ "$domain" == "$record" ]]; then

@@ -4,7 +4,7 @@ source avustajat.sh
 
 while getopts "h" flag; do
     case "${flag}" in
-        h) echo "Käyttö: poista-kayttaja.sh kayttaja" 
+        h) alkuotsikko "kayttaja" 
 	   echo
 	   echo "Poistaa käyttäjän ja käyttäjän kansiot. HUOM! Ei poista käyttäjän a-recordeja."
 	   echo

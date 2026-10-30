@@ -6,7 +6,7 @@ backend_portti=
 
 while getopts "hp:" flag; do
     case "${flag}" in
-        h) echo "Käyttö: lisaa-a-record.sh [asetukset] kayttaja domain a-record" 
+        h) alkuotsikko "kayttaja domain a-record" 
 	   echo
 	   echo "Lisää recordille nginx-konfiguraation ja tarvittavat kansiot."
 	   echo
@@ -58,4 +58,6 @@ chown lauri "$nginx_conf" "$log" -R
 
 echo "Luotiin tiedosto $nginx_conf"
 echo
-echo "Palomuuriin täytyy avata portti $backend_portti"
+echo "Seuraavaksi aja:"
+echo "  sudo ufw allow $backend_portti"
+echo "  sudo podman exec nginx nginx -s reload"

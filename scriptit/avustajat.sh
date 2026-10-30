@@ -8,6 +8,9 @@ NGINX_CONFD=/home/lauri/nginx/conf.d
 VM_IP=172.234.123.168
 MOUNT_KANSIOT=/etc/mount-kansiot
 
+alkuotsikko() {
+    echo "Käyttö: ${0##*/} [asetukset] $1"
+}
 
 luo_mount_kansio() {
     local kansio="$1"
