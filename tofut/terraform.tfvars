@@ -12,6 +12,10 @@ domainit = {
 			{
 				name = "testikayttaja"
 				record_type = "A"
+			},
+			{
+				name = "ap"
+				record_type = "A"
 			}
 		]
 	}
