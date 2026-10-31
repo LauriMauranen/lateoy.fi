@@ -29,12 +29,12 @@ server {
         }
 
 	# spa:n pitää käyttää tätä, muuten palauttaa index.html, katso seuraava location
-        location /api/ {
-		try_files "" @backend;
-        }
+        #location /api/ {
+	#	try_files "" @backend;
+        #}
 
         location / {
-		try_files $uri /index.html @backend;
+		try_files $uri @backend;
         }
 
         location @backend {
