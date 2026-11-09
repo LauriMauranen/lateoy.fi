@@ -1,12 +1,12 @@
-## Tervetuloa lateoy.fi asiakkaaksi!
+# Tervetuloa lateoy.fi asiakkaaksi!
 
-Olet käyttäjä {{ kayttaja }} ja sinulla on kotihakemistossasi /home/{{ kayttaja }} tilaa {{ koti_koko }} MB. Nettisivusi data-hakemisto löytyy /www-data/{{ kayttaja }}.{{ domain }} tai jos olet ostanut oman domainin niin /www-data/<oma-domain>. Huomaa että kaikki data-hakemiston tiedostot löytyvät https://{{ kayttaja }}.{{ domain }}/, joten varo laittamasta sinne tiedostoja joita et halua jakaa!
+Olet käyttäjä {{ kayttaja }} ja sinulla on kotihakemistossasi /home/{{ kayttaja }} tilaa {{ koti_koko }} MB. Nettisivusi data-hakemisto löytyy /www-data/{{ kayttaja }}.{{ domain }} tai jos sinulla on oma domain niin /www-data/<domain>. Huomaa että kaikki data-hakemiston tiedostot löytyvät https://{{ kayttaja }}.{{ domain }}/, joten varo laittamasta sinne tiedostoja joita et halua jakaa kaikille!
 
-### Taustapalvelu
+## Taustapalvelu
 
-Jos haluat sivullesi dynaamista sisältöä, voit laittaa pyörimään sovelluksesi Podmanilla (https://podman.io). Podman on täysin Docker-yhteensopiva. Laita kontti kuuntelemaan porttia {{ portti }}, nginx ohjaa liikenteen siihen jos polun tiedostoa ei löydy data-hakemistosta. 
+Jos haluat sivullesi dynaamista sisältöä, voit laittaa pyörimään sovelluksesi Podmanilla (https://podman.io). Podman on täysin Docker-yhteensopiva. Jokaiselle osoitteellesi on määritetty portti johon nginx ohjaa liikenteen jos polun tiedostoa ei löydy data-hakemistosta. Portit löydät tiedostosta /home/{{ kayttaja }}/{{ porttitiedosto }}. Laita konttisi siis kuuntelemaan oikeaa porttia.
 
-Podman hoitaa kontin uudelleenkäynnistyksen hyödyntäen systemd:tä (https://docs.podman.io/en/latest/markdown/podman-systemd.unit.5.html). **Eli kontti käynnistetään käyttäen komentoa systemctl, ei podman/podman compose!** Luo tiedosto $HOME/.config/containers/systemd/<sovellus>.container jossa kontin käynnistysparametrit määritetään. Esimerkkitiedosto voisi olla
+Podman hoitaa kontin uudelleenkäynnistyksen hyödyntäen systemd:tä (https://docs.podman.io/en/latest/markdown/podman-systemd.unit.5.html). **Eli kontti käynnistetään käyttäen komentoa systemctl, ei podman!** Luo tiedosto {{ systemd-tiedosto }} jossa kontin käynnistysparametrit määritetään. Esimerkkitiedosto voisi olla
 
 ```
 [Unit]
@@ -17,8 +17,8 @@ Image=localhost/vinskis-great-button-game_btn-game:latest
 ContainerName=btn-game
 Volume=/home/{{ kayttaja }}/log/{{ kayttaja }}.{{ domain }}/gunicorn:/usr/src/app/log/gunicorn
 Volume=/home/{{ kayttaja }}/sqlite/button-game.db:/usr/src/app/button-game.db
-PublishPort={{ ip }}:{{ port }}:{{ port }}
-Exec=-b 0.0.0.0:{{ port }}
+PublishPort=8047:8047
+Exec=-b 0.0.0.0:8047  # gunicorn kuuntelemaan porttia 8047
 
 [Install]
 WantedBy=default.target
@@ -38,11 +38,14 @@ systemctl --user daemon-reload
 # laita käyntiin, servicen nimi tulee ContainerName-kentästä
 systemctl --user start nginx
 
-# vaaditaan että kontti pysyy käynnissä uloskirjautumisenkin jälkeen
+# vaaditaan että kontti pysyy käynnissä uloskirjautumisen jälkeen
 loginctl enable-linger
+
+# aja restart kun haluat ottaa päivitetyn kontin kuvan käyttöön
+systemctl --user restart nginx
 
 podman ps
 # CONTAINER ID  IMAGE                       COMMAND                CREATED           STATUS          PORTS                   NAMES
-# f18118a16346  localhost/vinskis-great...  -b 0.0.0.0:{{ port }}  two seconds ago   Up two seconds  0.0.0.0:8047->8047/tcp  btn-game
+# f18118a16346  localhost/vinskis-great...  -b 0.0.0.0:{{ port }}  two seconds ago   Up two seconds  0.0.0.0:{{ portti }}->{{ portti }}/tcp  btn-game
 ```
 
