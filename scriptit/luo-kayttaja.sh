@@ -45,6 +45,8 @@ useradd "$kayttaja" -s /bin/bash -d "$home"
 mkdir -v "$home/.ssh" "$home/log"
 touch "$home/.ssh/authorized_keys"
 
+rakenna_kayttoohje "$kayttaja" "$kotikansion_koko_MB" > "$home/$KAYTTOOHJE"
+
 chown "$kayttaja" "$home" -R
 chmod 700 "$home"
 

@@ -4,9 +4,15 @@ set -euo pipefail
 
 LOKIT=/var/log/sovelluslokit
 PORTIT=/home/lauri/nginx/porttinumerot.txt
+NGINX_TEMPLATE=/home/lauri/lateoy.fi/conf.d/user-template
+OHJEET_TEMPLATE=/home/lauri/lateoy.fi/ohjeet-kayttajalle.md
 NGINX_CONFD=/home/lauri/nginx/conf.d
 VM_IP=172.234.123.168
 MOUNT_KANSIOT=/etc/mount-kansiot
+KAYTTOOHJE=kayttoohje.md
+KAYTTAJAN_PORTIT=osoitteet-ja-portit.txt
+SYSTEMD_TIEDOSTO=".config/containers/systemd/<sovellukseni>.container"
+LATE_DOMAIN=lateoy.fi
 
 alkuotsikko() {
     echo "Käyttö: ${0##*/} [asetukset] $1"
@@ -97,7 +103,6 @@ rakenna_nginx_conf() {
     local domain="$1"
     local koko_domain="$2"
     local backend_portti="$3"
-    local nginx_template="$4"
 
     local lokit="$LOKIT/$koko_domain/nginx"
 
@@ -106,7 +111,20 @@ rakenna_nginx_conf() {
     local sed_3="s/{{ backend }}/$VM_IP:$backend_portti/g"
     local sed_4="s/{{ lokit }}/${lokit//\//\\/}/g"
 
-    sed -e "$sed_1" -e "$sed_2" -e "$sed_3" -e "$sed_4" "$nginx_template"
+    sed -e "$sed_1" -e "$sed_2" -e "$sed_3" -e "$sed_4" "$NGINX_TEMPLATE"
+}
+
+rakenna_kayttoohje() {
+    local ka="$1"
+    local ko="$2"
+
+    local s1="s/{{ kayttaja }}/$ka/g"
+    local s2="s/{{ koti-koko }}/$ko/g"
+    local s3="s/{{ domain }}/$LATE_DOMAIN/g"
+    local s4="s/{{ portit }}/${KAYTTAJAN_PORTIT//\//\\/}/g"
+    local s5="s/{{ systemd-tiedosto }}/${SYSTEMD_TIEDOSTO//\//\\/}/g"
+
+    sed -e "$s1" -e "$s2" -e "$s3" -e "$s4" -e "$s5" "$OHJEET_TEMPLATE"
 }
 
 tarkista_root() {

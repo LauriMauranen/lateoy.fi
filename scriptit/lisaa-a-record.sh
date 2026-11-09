@@ -47,11 +47,8 @@ backend_portti="$(ota_portti_tiedostosta "$PORTIT" "$backend_portti")"
 
 echo "$backend_portti" > "/home/$kayttaja/.$koko_domain-backend-portti"
 
-nginx_conf="/home/lauri/nginx/conf.d/$koko_domain.conf"
-nginx_template=/home/lauri/lateoy.fi/conf.d/user-template
-
-rakenna_nginx_conf "$domain" "$koko_domain" "$backend_portti" "$nginx_template" \
-    > "$nginx_conf"
+nginx_conf="$NGINX_CONFD/$koko_domain.conf"
+rakenna_nginx_conf "$domain" "$koko_domain" "$backend_portti" > "$nginx_conf"
 
 # minulle
 chown lauri "$nginx_conf" "$log" -R

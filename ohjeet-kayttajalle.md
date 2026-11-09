@@ -1,12 +1,12 @@
 # Tervetuloa lateoy.fi asiakkaaksi!
 
-Olet käyttäjä {{ kayttaja }} ja sinulla on kotihakemistossasi /home/{{ kayttaja }} tilaa {{ koti_koko }} MB. Nettisivusi data-hakemisto löytyy /www-data/{{ kayttaja }}.{{ domain }} tai jos sinulla on oma domain niin /www-data/<domain>. Huomaa että kaikki data-hakemiston tiedostot löytyvät https://{{ kayttaja }}.{{ domain }}/, joten varo laittamasta sinne tiedostoja joita et halua jakaa kaikille!
+Olet käyttäjä {{ kayttaja }} ja sinulla on kotihakemistossasi /home/{{ kayttaja }} tilaa {{ koti-koko }} MB. Nettisivusi data-hakemisto löytyy /www-data/{{ kayttaja }}.{{ domain }} tai jos sinulla on oma domain niin /www-data/<oma-domain>. Huomaa että kaikki data-hakemiston tiedostot löytyvät https://{{ kayttaja }}.{{ domain }}/, joten varo laittamasta sinne tiedostoja joita et halua jakaa kaikille!
 
 ## Taustapalvelu
 
-Jos haluat sivullesi dynaamista sisältöä, voit laittaa pyörimään sovelluksesi Podmanilla (https://podman.io). Podman on täysin Docker-yhteensopiva. Jokaiselle osoitteellesi on määritetty portti johon nginx ohjaa liikenteen jos polun tiedostoa ei löydy data-hakemistosta. Portit löydät tiedostosta /home/{{ kayttaja }}/{{ porttitiedosto }}. Laita konttisi siis kuuntelemaan oikeaa porttia.
+Jos haluat sivullesi dynaamista sisältöä, voit laittaa pyörimään sovelluksesi Podmanilla (https://podman.io). Podman on täysin Docker-yhteensopiva. Jokaiselle osoitteellesi on määritetty portti johon nginx ohjaa liikenteen jos polun tiedostoa ei löydy data-hakemistosta. Portit löydät tiedostosta ~/{{ portit }}. Laita konttisi siis kuuntelemaan oikeaa porttia.
 
-Podman hoitaa kontin uudelleenkäynnistyksen hyödyntäen systemd:tä (https://docs.podman.io/en/latest/markdown/podman-systemd.unit.5.html). **Eli kontti käynnistetään käyttäen komentoa systemctl, ei podman!** Luo tiedosto {{ systemd-tiedosto }} jossa kontin käynnistysparametrit määritetään. Esimerkkitiedosto voisi olla
+Podman hoitaa kontin uudelleenkäynnistyksen hyödyntäen systemd:tä (https://docs.podman.io/en/latest/markdown/podman-systemd.unit.5.html). **Eli kontti käynnistetään käyttäen komentoa systemctl, ei podman!** Luo tiedosto ~/{{ systemd-tiedosto }} jossa kontin käynnistysparametrit määritetään. Esimerkkitiedosto voisi olla
 
 ```
 [Unit]
@@ -46,6 +46,5 @@ systemctl --user restart nginx
 
 podman ps
 # CONTAINER ID  IMAGE                       COMMAND                CREATED           STATUS          PORTS                   NAMES
-# f18118a16346  localhost/vinskis-great...  -b 0.0.0.0:{{ port }}  two seconds ago   Up two seconds  0.0.0.0:{{ portti }}->{{ portti }}/tcp  btn-game
+# f18118a16346  localhost/vinskis-great...  -b 0.0.0.0:8047  two seconds ago   Up two seconds  0.0.0.0:8047->8047/tcp  btn-game
 ```
-
