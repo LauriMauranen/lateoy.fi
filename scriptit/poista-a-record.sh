@@ -32,7 +32,7 @@ fi
 
 koko_domain=$(tee_koko_domain "$domain" "$record")
 
-if ! ls -l  /www-data | grep "$koko_domain" | cut -f3 -d' '; then
+if ! ls -l /www-data | grep "$koko_domain" | cut -f3 -d' '; then
     echo "Käyttäjällä $kayttaja ei ole osoitetta $koko_domain"
     exit 1 
 fi
@@ -44,10 +44,15 @@ if [[ -e "$nginx_conf" ]]; then
     portti="$(laita_portti_takaisin "$nginx_conf")"
     echo "$portti" >> "$PORTIT"
     p="/home/$kayttaja/$KAYTTAJAN_PORTIT"
-    # poistaa porttirivin TODO tässä on joku virhe
-    grep -v "$portti" "$p" > "$p-tmp"
-    cat "$p-tmp" > "$p"
-    rm "$p-tmp"
+    w=$(wc -l "${p}")
+    # poistetaan porttirivi. jos vain yksi rivi poistetaan koko tiedosto.
+    if [[ "${w% *}" -gt 1 ]]; then
+	grep -v "$portti" "$p" > "$p-tmp"
+	cat "$p-tmp" > "$p"
+	rm "$p-tmp"
+    else
+	rm "${p}"
+    fi
     echo "Seuraavaksi aja:"
     echo "  sudo ufw delete allow $portti"
     echo "  sudo podman exec nginx nginx -s reload"

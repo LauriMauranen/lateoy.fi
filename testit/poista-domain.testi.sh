@@ -24,7 +24,7 @@ if poista-domain.sh; then
     virheita+=1
 fi
 
-if ! poista-domain.sh "$domain"; then
+if ! poista-domain.sh "$kayttaja" "$domain"; then
     testi_echo "poista-domain.sh palautti virheen!"
     virheita+=1
 fi

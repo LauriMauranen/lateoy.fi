@@ -3,9 +3,7 @@ FROM docker.io/ubuntu:24.04
 RUN apt update && apt install -y parallel
 RUN useradd -m lauri
 
-RUN mkdir /var/log/sovelluslokit
-RUN mkdir /www-data
-RUN mkdir /etc/mount-kansiot
+RUN mkdir /var/log/sovelluslokit /www-data /etc/mount-kansiot
 
 WORKDIR /home/lauri
 
@@ -13,5 +11,7 @@ RUN mkdir -p nginx/conf.d lateoy.fi .tiedoksi
 RUN bash -c 'for i in {8000..8999}; do echo "$i" >> nginx/porttinumerot.txt; done'
 
 WORKDIR ./lateoy.fi
+
+COPY . .
 
 ENTRYPOINT ["./scriptit/aja-testit.sh"]
