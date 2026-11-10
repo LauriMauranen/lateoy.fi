@@ -9,8 +9,9 @@ OHJEET_TEMPLATE=/home/lauri/lateoy.fi/ohjeet-kayttajalle.md
 NGINX_CONFD=/home/lauri/nginx/conf.d
 VM_IP=172.234.123.168
 MOUNT_KANSIOT=/etc/mount-kansiot
-KAYTTOOHJE=kayttoohje.md
-KAYTTAJAN_PORTIT=osoitteet-ja-portit.txt
+TIETOJA_KAYTTAJALLE=.tiedoksi
+KAYTTOOHJE="$TIETOJA_KAYTTAJALLE/kayttoohje.md"
+KAYTTAJAN_PORTIT="$TIETOJA_KAYTTAJALLE/osoitteet-ja-portit.txt"
 SYSTEMD_TIEDOSTO=".config/containers/systemd/<sovellukseni>.container"
 LATE_DOMAIN=lateoy.fi
 

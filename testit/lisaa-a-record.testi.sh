@@ -5,7 +5,6 @@ source avustajat.sh
 kayttaja=lauri
 domain="$(satunnainen_mj).com"
 record="$(satunnainen_mj)"
-nginx_conf=/home/lauri/nginx/conf.d
 
 set +e
 
@@ -33,7 +32,7 @@ fi
 
 onhan_olemassa "/www-data/$domain"
 onhan_olemassa "$LOKIT/$domain"
-onhan_olemassa "$nginx_conf/$domain.conf"
+onhan_olemassa "$NGINX_CONFD/$domain.conf"
 
 
 if ! lisaa-a-record.sh "$kayttaja" "$domain" "$record"; then
@@ -43,7 +42,7 @@ fi
 
 onhan_olemassa "/www-data/$record.$domain"
 onhan_olemassa "$LOKIT/$record.$domain"
-onhan_olemassa "$nginx_conf/$record.$domain.conf"
+onhan_olemassa "$NGINX_CONFD/$record.$domain.conf"
 
 
 if ! lisaa-a-record.sh -p 8999 "$kayttaja" "$domain" "matti"; then
@@ -53,9 +52,9 @@ fi
 
 onhan_olemassa "/www-data/matti.$domain"
 onhan_olemassa "$LOKIT/matti.$domain"
-onhan_olemassa "$nginx_conf/matti.$domain.conf"
+onhan_olemassa "$NGINX_CONFD/matti.$domain.conf"
 
-if ! grep 8999 "$nginx_conf/matti.$domain.conf"; then
+if ! grep 8999 "$NGINX_CONFD/matti.$domain.conf"; then
     testi_echo "Portti 8999 ei löydy nginx-konfiguraatiosta!"
     virheita+=1
 fi

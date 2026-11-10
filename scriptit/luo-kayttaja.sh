@@ -42,7 +42,7 @@ luo_mount_kansio "$home" "$kotikansion_koko_MB"
 
 useradd "$kayttaja" -s /bin/bash -d "$home"
 
-mkdir -v "$home/.ssh" "$home/log"
+mkdir -v "$home/.ssh" "$home/log" "$home/$TIETOJA_KAYTTAJALLE"
 touch "$home/.ssh/authorized_keys"
 
 rakenna_kayttoohje "$kayttaja" "$kotikansion_koko_MB" > "$home/$KAYTTOOHJE"

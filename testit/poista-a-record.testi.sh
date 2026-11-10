@@ -5,7 +5,6 @@ source avustajat.sh
 kayttaja=lauri
 domain="$(satunnainen_mj).com"
 record="$(satunnainen_mj)"
-nginx_conf=/home/lauri/nginx/conf.d
 
 # alustus
 
@@ -14,10 +13,10 @@ lisaa-a-record.sh "$kayttaja" "$domain" "$record"
 
 onhan_olemassa "/www-data/$domain"
 onhan_olemassa "$LOKIT/$domain"
-onhan_olemassa "$nginx_conf/$domain.conf"
+onhan_olemassa "$NGINX_CONFD/$domain.conf"
 onhan_olemassa "/www-data/$record.$domain"
 onhan_olemassa "$LOKIT/$record.$domain"
-onhan_olemassa "$nginx_conf/$record.$domain.conf"
+onhan_olemassa "$NGINX_CONFD/$record.$domain.conf"
 
 set +e
 
@@ -26,24 +25,24 @@ if poista-a-record.sh; then
     virheita+=1
 fi
 
-if ! poista-a-record.sh "$domain" "$domain"; then
+if ! poista-a-record.sh "$kayttaja" "$domain" "$domain"; then
     testi_echo "poista-a-record.sh palautti virheen!"
     virheita+=1
 fi
 
 eihan_ole_olemassa "/www-data/$domain"
 eihan_ole_olemassa "$LOKIT/$domain"
-eihan_ole_olemassa "$nginx_conf/$domain.conf"
+eihan_ole_olemassa "$NGINX_CONFD/$domain.conf"
 
 
-if ! poista-a-record.sh "$record" "$domain"; then
+if ! poista-a-record.sh "$kayttaja" "$record" "$domain"; then
     testi_echo "poista-a-record.sh palautti virheen!"
     virheita+=1
 fi
 
 eihan_ole_olemassa "/www-data/$record.$domain"
 eihan_ole_olemassa "$LOKIT/$record.$domain"
-eihan_ole_olemassa "$nginx_conf/$record.$domain.conf"
+eihan_ole_olemassa "$NGINX_CONFD/$record.$domain.conf"
 
 
 exit "$virheita"

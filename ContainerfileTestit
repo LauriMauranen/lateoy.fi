@@ -9,7 +9,7 @@ RUN mkdir /etc/mount-kansiot
 
 WORKDIR /home/lauri
 
-RUN mkdir -p nginx/conf.d lateoy.fi
+RUN mkdir -p nginx/conf.d lateoy.fi .tiedoksi
 RUN bash -c 'for i in {8000..8999}; do echo "$i" >> nginx/porttinumerot.txt; done'
 
 WORKDIR ./lateoy.fi

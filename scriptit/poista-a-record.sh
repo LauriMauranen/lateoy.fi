@@ -4,7 +4,7 @@ source avustajat.sh
 
 while getopts "h" flag; do
     case "${flag}" in
-        h) alkuotsikko "a-record domain" 
+        h) alkuotsikko "kayttaja a-record domain" 
 	   echo
 	   echo "Poistaa a-recordin kansiot ja tiedostot."
 	   echo
@@ -16,8 +16,14 @@ done
 
 if ! tarkista_root; then exit 1; fi
 
-record="${@:$OPTIND:1}"
-domain="${@:$OPTIND+1:1}"
+kayttaja="${@:$OPTIND:1}"
+record="${@:$OPTIND+1:1}"
+domain="${@:$OPTIND+2:1}"
+
+if ! grep "$kayttaja:" /etc/passwd; then
+    echo "Käyttäjää $kayttaja ei ole olemassa!"
+    exit 1
+fi
 
 if [[ -z "$record" || -z "$domain" ]]; then
     echo "'a-record' ja 'domain' ovat pakollisia!"
@@ -26,12 +32,22 @@ fi
 
 koko_domain=$(tee_koko_domain "$domain" "$record")
 
+if ! ls -l  /www-data | grep "$koko_domain" | cut -f3 -d' '; then
+    echo "Käyttäjällä $kayttaja ei ole osoitetta $koko_domain"
+    exit 1 
+fi
+
 nginx_conf="$NGINX_CONFD/$koko_domain.conf"
 [[ ! -e "$nginx_conf" ]] && nginx_conf="$nginx_conf.error"
 
 if [[ -e "$nginx_conf" ]]; then
     portti="$(laita_portti_takaisin "$nginx_conf")"
     echo "$portti" >> "$PORTIT"
+    p="/home/$kayttaja/$KAYTTAJAN_PORTIT"
+    # poistaa porttirivin TODO tässä on joku virhe
+    grep -v "$portti" "$p" > "$p-tmp"
+    cat "$p-tmp" > "$p"
+    rm "$p-tmp"
     echo "Seuraavaksi aja:"
     echo "  sudo ufw delete allow $portti"
     echo "  sudo podman exec nginx nginx -s reload"
