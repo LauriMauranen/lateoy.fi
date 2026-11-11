@@ -2,6 +2,7 @@
 
 set -euo pipefail
 
+
 LOKIT=/var/log/sovelluslokit
 PORTIT=/home/lauri/nginx/porttinumerot.txt
 NGINX_TEMPLATE=/home/lauri/lateoy.fi/conf.d/user-template
@@ -14,6 +15,7 @@ KAYTTOOHJE="$TIETOJA_KAYTTAJALLE/kayttoohje.md"
 KAYTTAJAN_PORTIT="$TIETOJA_KAYTTAJALLE/osoitteet-ja-portit.txt"
 SYSTEMD_TIEDOSTO=".config/containers/systemd/<sovellukseni>.container"
 LATE_DOMAIN=lateoy.fi
+
 
 alkuotsikko() {
     echo "Käyttö: ${0##*/} [asetukset] $1"
@@ -132,6 +134,19 @@ tarkista_root() {
     if [[ "$(whoami)" != root ]]; then
 	echo "Aja komento pääkäyttäjänä!"
 	return 1
+    fi
+}
+
+poista_porttirivi_tai_koko_tiedosto() {
+    local t="$1"
+    local p="$2"
+    w="$(wc -l ${t})"
+    if [[ "${w% *}" -gt 1 ]]; then
+	grep -v "$p" "$t" > "$t-tmp"
+	cat "$t-tmp" > "$t"
+	rm "$t-tmp"
+    else
+	rm "${t}"
     fi
 }
 

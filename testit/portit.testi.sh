@@ -13,7 +13,8 @@ for i in {8000..8999}; do echo "$i" >> "$tiedosto"; done
 
 set +e
 
-# 1
+
+# ota_portti_tiedostosta
 
 p="$(ota_portti_tiedostosta "$tiedosto" "")"
 if [[ "$p" != 8000 ]]; then
@@ -42,7 +43,8 @@ if [[ "$p" != 8004 ]]; then
     virheita+=1
 fi
 
-# 2
+
+# laita_portti_takaisin
 
 conf=/tmp/testitmp/nginx_conf
 template=/home/lauri/lateoy.fi/conf.d/user-template
@@ -55,10 +57,39 @@ if [[ "$p" != 1234 ]]; then
     virheita+=1
 fi
 
+
+# poista_porttirivi_tai_koko_tiedosto
+
+ojp=/tmp/testitmp/osoitteet-ja-portit.txt
+s=$'jaa.com 123\njee.org 321' 
+echo "${s}" > "$ojp"
+
+poista_porttirivi_tai_koko_tiedosto "$ojp" 4321
+o="$(cat "$ojp")"
+if [[ "$s" != "${o}" ]]; then
+    testi_echo "poista_porttirivi_tai_koko_tiedosto toimii väärin"
+    virheita+=1
+fi
+
+poista_porttirivi_tai_koko_tiedosto "$ojp" 321
+o="$(cat "$ojp")"
+if [[ "$o" != "jaa.com 123" ]]; then
+    testi_echo "poista_porttirivi_tai_koko_tiedosto ei poistanut riviä"
+    virheita+=1
+fi
+
+poista_porttirivi_tai_koko_tiedosto "$ojp" 4321
+if [[ -e "$ojp" ]]; then
+    testi_echo "poista_porttirivi_tai_koko_tiedosto ei poistanut tiedostoa"
+    virheita+=1
+fi
+
+
 # siivous
 
 rm "$tiedosto"
 rm "$conf"
+rm -f "$ojp"
 
 
 exit "$virheita"

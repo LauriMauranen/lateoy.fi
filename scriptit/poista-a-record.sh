@@ -43,16 +43,8 @@ nginx_conf="$NGINX_CONFD/$koko_domain.conf"
 if [[ -e "$nginx_conf" ]]; then
     portti="$(laita_portti_takaisin "$nginx_conf")"
     echo "$portti" >> "$PORTIT"
-    p="/home/$kayttaja/$KAYTTAJAN_PORTIT"
-    w=$(wc -l "${p}")
-    # poistetaan porttirivi. jos vain yksi rivi poistetaan koko tiedosto.
-    if [[ "${w% *}" -gt 1 ]]; then
-	grep -v "$portti" "$p" > "$p-tmp"
-	cat "$p-tmp" > "$p"
-	rm "$p-tmp"
-    else
-	rm "${p}"
-    fi
+    poista_porttirivi_tai_koko_tiedosto \
+	"/home/$kayttaja/$KAYTTAJAN_PORTIT" "${portti}" 
     echo "Seuraavaksi aja:"
     echo "  sudo ufw delete allow $portti"
     echo "  sudo podman exec nginx nginx -s reload"
