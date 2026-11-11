@@ -58,3 +58,6 @@ echo
 echo "Seuraavaksi aja:"
 echo "  sudo ufw allow $backend_portti"
 echo "  sudo podman exec nginx nginx -s reload"
+
+# testirecord-serverilla.sh käyttää!!!
+echo "$backend_portti"
