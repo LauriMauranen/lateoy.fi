@@ -5,12 +5,11 @@ source avustajat.sh
 virhe=0
 
 kayttaja="testikayttaja"
-domain="lateoy.fi"
 
 luo-kayttaja.sh -s 10 "$kayttaja"
 
-portti="$(lisaa-a-record.sh "$kayttaja" "$domain" "$kayttaja")"
-portti="${portti##* }"
+portti="$(head -n 1 $PORTIT)"
+lisaa-a-record.sh "$kayttaja" "$LATE_DOMAIN" "$kayttaja"
 
 ufw allow "$portti"
 ufw reload
@@ -19,9 +18,9 @@ podman exec nginx nginx -s reload
 
 sleep 5
 
-[[ ! "$(curl "https://$kayttaja.$domain")" =~ "Terve $kayttaja!" ]] && virhe=1
+[[ ! "$(curl "https://$kayttaja.$LATE_DOMAIN")" =~ "Terve $kayttaja!" ]] && virhe=1
 
-poista-a-record.sh "$kayttaja" "$kayttaja" "$domain"
+poista-a-record.sh "$kayttaja" "$kayttaja" "$LATE_DOMAIN"
 poista-kayttaja.sh "$kayttaja"
 
 ufw delete allow "$portti"
@@ -29,5 +28,5 @@ ufw reload
 
 podman exec nginx nginx -s reload
 
-[[ "$virhe" == 1 ]] && echo "url '$kayttaja.$domain' ei palauta oikeaa dataa!!!"
+[[ "$virhe" == 1 ]] && echo "url '$kayttaja.$LATE_DOMAIN' ei palauta oikeaa dataa!!!"
 exit "$virhe"
