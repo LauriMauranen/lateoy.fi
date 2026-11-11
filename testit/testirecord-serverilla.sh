@@ -21,7 +21,7 @@ sleep 5
 
 [[ ! "$(curl "https://$kayttaja.$domain")" =~ "Terve $kayttaja!" ]] && virhe=1
 
-poista-a-record.sh "$kayttaja" "$domain"
+poista-a-record.sh "$kayttaja" "$kayttaja" "$domain"
 poista-kayttaja.sh "$kayttaja"
 
 ufw delete allow "$portti"
