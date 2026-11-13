@@ -2,7 +2,7 @@
 Description=Laurin mahtava systeemi
 
 [Container]
-Image=docker.io/nginx:1.29.4-alpine
+Image=docker.io/nginx:1.31.8-alpine
 ContainerName=nginx
 PublishPort=80:80
 PublishPort=443:443
