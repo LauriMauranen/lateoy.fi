@@ -22,12 +22,10 @@ set +e
 
 if poista-a-record.sh; then
     testi_echo "poista-a-record.sh ilman argumentteja ei palauttanut virhettä!"
-    virheita+=1
 fi
 
 if ! poista-a-record.sh "$kayttaja" "$domain" "$domain"; then
     testi_echo "poista-a-record.sh palautti virheen!"
-    virheita+=1
 fi
 
 eihan_ole_olemassa "/www-data/$domain"
@@ -37,7 +35,6 @@ eihan_ole_olemassa "$NGINX_CONFD/$domain.conf"
 
 if ! poista-a-record.sh "$kayttaja" "$record" "$domain"; then
     testi_echo "poista-a-record.sh palautti virheen!"
-    virheita+=1
 fi
 
 eihan_ole_olemassa "/www-data/$record.$domain"

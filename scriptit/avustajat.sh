@@ -3,7 +3,7 @@
 set -euo pipefail
 
 
-LOKIT=/var/log/sovelluslokit
+LOKIT=/var/log/nginx
 PORTIT=/home/lauri/nginx/porttinumerot.txt
 NGINX_TEMPLATE=/home/lauri/lateoy.fi/conf.d/user-template
 OHJEET_TEMPLATE=/home/lauri/lateoy.fi/ohjeet-kayttajalle.md
@@ -15,6 +15,7 @@ KAYTTOOHJE="$TIETOJA_KAYTTAJALLE/kayttoohje.md"
 KAYTTAJAN_PORTIT="$TIETOJA_KAYTTAJALLE/osoitteet-ja-portit.txt"
 SYSTEMD_TIEDOSTO=".config/containers/systemd/<sovellukseni>.container"
 LATE_DOMAIN=lateoy.fi
+MAX_KOTI_KOKO=2048
 
 
 alkuotsikko() {
@@ -88,26 +89,19 @@ ota_portti_tiedostosta() {
     echo $portti
 }
 
-laita_portti_takaisin() {
+lue_portti() {
     local nginx_conf="$1"
-
     local portti="$(grep -P "proxy_pass http://$VM_IP:\d{4};" "$nginx_conf" || :)"
     local portti="${portti##*:}"
     local portti="${portti%;}"
-
-    if [[ -z "$portti" ]]; then
-	echo "Portin etsiminen tiedostosta $nginx_conf epäonnistui!" >&2
-    else 
-	echo "$portti"
-    fi
+    echo "$portti"
 }
 
 rakenna_nginx_conf() {
     local domain="$1"
     local koko_domain="$2"
     local backend_portti="$3"
-
-    local lokit="$LOKIT/$koko_domain/nginx"
+    local lokit="$4"
 
     local sed_1="s/{{ domain }}/$domain/g"
     local sed_2="s/{{ koko-domain }}/$koko_domain/g"
@@ -150,6 +144,11 @@ poista_porttirivi_tai_koko_tiedosto() {
     fi
 }
 
+virhe() {
+    echo "$1"
+    exit "${2:-1}"
+}
+
 
 # testeihin
 
@@ -158,19 +157,18 @@ declare -i virheita=0
 
 testi_echo() {
     echo "${0##*/}: $@" >&2	
+    virheita+=1
 }
 
 onhan_olemassa() {
     if [[ ! -e "$1" ]]; then
 	testi_echo "Kansio/tiedosto $1 puuttuu!"
-	virheita+=1
     fi
 }
 
 eihan_ole_olemassa() {
     if [[ -e "$1" ]]; then
 	testi_echo "Kansio/tiedosto $1 on olemassa!"
-	virheita+=1
     fi
 }
 

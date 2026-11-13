@@ -26,14 +26,12 @@ if ! tarkista_root; then exit 1; fi
 
 kayttaja="${@:$OPTIND:1}"
 
-if [[ "$kotikansion_koko_MB" > 2048 ]]; then
-    echo "Kotikansio voi olla max 2G"
-    exit 1
+if [[ "$kotikansion_koko_MB" > "$MAX_KOTI_KOKO" ]]; then
+    virhe "Kotikansio voi olla max $MAX_KOTI_KOKO MB"
 fi
 
 if grep "$kayttaja:" /etc/passwd; then
-    echo "$kayttaja on jo olemassa!"
-    exit 1
+    virhe "$kayttaja on jo olemassa!"
 fi
 
 home="/home/$kayttaja"
@@ -42,7 +40,7 @@ luo_mount_kansio "$home" "$kotikansion_koko_MB"
 
 useradd "$kayttaja" -s /bin/bash -d "$home"
 
-mkdir -v "$home/.ssh" "$home/log" "$home/$TIETOJA_KAYTTAJALLE"
+mkdir -v "$home/.ssh" "$home/$TIETOJA_KAYTTAJALLE"
 touch "$home/.ssh/authorized_keys"
 
 rakenna_kayttoohje "$kayttaja" "$kotikansion_koko_MB" > "$home/$KAYTTOOHJE"

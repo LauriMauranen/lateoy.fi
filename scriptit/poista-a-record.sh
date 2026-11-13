@@ -21,33 +21,31 @@ record="${@:$OPTIND+1:1}"
 domain="${@:$OPTIND+2:1}"
 
 if ! grep "$kayttaja:" /etc/passwd; then
-    echo "Käyttäjää $kayttaja ei ole olemassa!"
-    exit 1
+    virhe "Käyttäjää $kayttaja ei ole olemassa!"
 fi
 
 if [[ -z "$record" || -z "$domain" ]]; then
-    echo "'a-record' ja 'domain' ovat pakollisia!"
-    exit 1 
+    virhe "'a-record' ja 'domain' ovat pakollisia!"
 fi
 
 koko_domain=$(tee_koko_domain "$domain" "$record")
 
 if ! ls -l /www-data | grep "$koko_domain" | cut -f3 -d' '; then
-    echo "Käyttäjällä $kayttaja ei ole osoitetta $koko_domain"
-    exit 1 
+    virhe "Käyttäjällä $kayttaja ei ole osoitetta $koko_domain"
 fi
 
 nginx_conf="$NGINX_CONFD/$koko_domain.conf"
-[[ ! -e "$nginx_conf" ]] && nginx_conf="$nginx_conf.error"
+portti="$(lue_portti "$nginx_conf")"
+[[ -z "$portti" ]] && virhe "Porttia ei saatu!"
+echo "$portti" >> "$PORTIT"
+poista_porttirivi_tai_koko_tiedosto \
+    "/home/$kayttaja/$KAYTTAJAN_PORTIT" "${portti}" 
 
-if [[ -e "$nginx_conf" ]]; then
-    portti="$(laita_portti_takaisin "$nginx_conf")"
-    echo "$portti" >> "$PORTIT"
-    poista_porttirivi_tai_koko_tiedosto \
-	"/home/$kayttaja/$KAYTTAJAN_PORTIT" "${portti}" 
-    echo "Seuraavaksi aja:"
-    echo "  sudo ufw delete allow $portti"
-    echo "  sudo podman exec nginx nginx -s reload"
-fi
+echo "Seuraavaksi aja:"
+echo "  sudo ufw delete allow $portti"
+echo "  sudo podman exec nginx nginx -s reload"
 
 rm -rfv "$LOKIT/$koko_domain" "/www-data/$koko_domain" "$nginx_conf"
+
+# vanha lokikansio
+rm -rfv "/var/log/sovelluslokit/$koko_domain"

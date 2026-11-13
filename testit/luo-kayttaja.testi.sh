@@ -7,12 +7,10 @@ home="/home/$kayttaja"
 
 if luo-kayttaja.sh -s 2049 "$kayttaja"; then
     testi_echo "luo-kayttaja loi yli kahden gigan kotikansion!"
-    virheita+=1
 fi
 
 if ! luo-kayttaja.sh -s 10 "$kayttaja"; then
     testi_echo "luo-kayttaja palautti virheen"
-    virheita+=1
 fi
 
 onhan_olemassa "$home"
@@ -21,7 +19,6 @@ onhan_olemassa "$MOUNT_KANSIOT/$home"
 if grep "{{" "$home/$KAYTTOOHJE"; then
     testi_echo "Käyttöohjeeseen on jäänyt muuttuja!"
     cat "$home/$KAYTTOOHJE"
-    virheita+=1
 fi
 
 

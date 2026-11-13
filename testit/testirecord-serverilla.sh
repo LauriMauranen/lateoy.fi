@@ -2,6 +2,10 @@
 
 source avustajat.sh
 
+# halutaan että ajetaan loppuun asti, muuten jää testikäyttäjä
+# roikkumaan mahdollisesti
+set +e
+
 virhe=0
 
 kayttaja="testikayttaja"

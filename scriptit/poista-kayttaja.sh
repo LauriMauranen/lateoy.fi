@@ -19,8 +19,7 @@ if ! tarkista_root; then exit 1; fi
 kayttaja="${@:$OPTIND:1}"
 
 if ! grep "$kayttaja:" /etc/passwd; then
-    echo "$kayttaja ei ole olemassa!"
-    exit 1
+    virhe "$kayttaja ei ole olemassa!"
 fi
 
 home="/home/$kayttaja"

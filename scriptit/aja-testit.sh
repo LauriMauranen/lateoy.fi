@@ -64,8 +64,6 @@ while read -r tulos; do
     tulokset["$testi"]="$virheita"
 done < <(parallel aja_testi ::: $testit ::: "$stdout_kansio")
 
-palautus=0
-
 if "$verboosi"; then
     for testi in $testit; do
 	echo "$testi output:"
@@ -75,16 +73,17 @@ if "$verboosi"; then
     done
 fi
 
+if ! "$testiajo"; then
+    rm -r "$stdout_kansio"
+    unset TESTIAJO
+fi
+
+palautus=0
 for testi in "${!tulokset[@]}"; do
     tulos=Läpi
     n="${tulokset[$testi]}"
     [[ "$n" > 0 ]] && tulos="Virheitä $n" && palautus=1
     echo "$tulos | $testi"
 done
-
-if ! "$testiajo"; then
-    rm -r "$stdout_kansio"
-    unset TESTIAJO
-fi
 
 exit "$palautus"

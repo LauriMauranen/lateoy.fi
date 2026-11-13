@@ -26,8 +26,7 @@ domain="${@:$OPTIND+1:1}"
 record="${@:$OPTIND+2:1}"
 
 if [[ -z "$kayttaja" || -z "$record" || -z "$domain" ]]; then
-    echo "'kayttaja', 'a-record' ja 'domain' ovat pakollisia!"
-    exit 1 
+    virhe "'kayttaja', 'a-record' ja 'domain' ovat pakollisia!"
 fi
 
 koko_domain=$(tee_koko_domain "$domain" "$record")
@@ -37,18 +36,19 @@ koko_domain=$(tee_koko_domain "$domain" "$record")
 data="/www-data/$koko_domain"
 log="$LOKIT/$koko_domain"
 
-mkdir -pv "$log/nginx" "$data"
+mkdir -pv "$log" "$data"
 echo "Terve $kayttaja!" > "$data/index.html"
 
 chown "$kayttaja" "$data" -R
 
 backend_portti="$(ota_portti_tiedostosta "$PORTIT" "$backend_portti")"
-[[ -z "$backend_portti" ]] && echo "Portin numeroa ei saatu!" && exit 1
+[[ -z "$backend_portti" ]] && virhe "Portin numeroa ei saatu!"
 
 echo "$koko_domain $backend_portti" >> "/home/$kayttaja/$KAYTTAJAN_PORTIT"
 
 nginx_conf="$NGINX_CONFD/$koko_domain.conf"
-rakenna_nginx_conf "$domain" "$koko_domain" "$backend_portti" > "$nginx_conf"
+rakenna_nginx_conf \
+    "$domain" "$koko_domain" "$backend_portti" "$log" > "$nginx_conf"
 
 # minulle
 chown lauri "$nginx_conf" "$log" -R
