@@ -18,7 +18,6 @@ onhan_olemassa "/www-data/$record.$domain"
 onhan_olemassa "$LOKIT/$record.$domain"
 onhan_olemassa "$NGINX_CONFD/$record.$domain.conf"
 
-set +e
 
 if poista-a-record.sh; then
     testi_echo "poista-a-record.sh ilman argumentteja ei palauttanut virhettä!"

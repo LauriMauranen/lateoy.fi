@@ -1,7 +1,6 @@
 #!/bin/bash
 
 source avustajat.sh
-set +e
 
 # 1
 

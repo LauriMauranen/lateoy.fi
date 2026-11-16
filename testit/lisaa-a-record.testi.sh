@@ -6,8 +6,6 @@ kayttaja=lauri
 domain="$(satunnainen_mj).com"
 record="$(satunnainen_mj)"
 
-set +e
-
 
 huonoja=("masa1!" "makee.$domain" "#¤%&/()" "mama.meme.org")
 

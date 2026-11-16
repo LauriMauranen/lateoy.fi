@@ -11,8 +11,6 @@ portti_echo() {
 tiedosto=/tmp/testitmp/porttinumerot.txt
 for i in {8000..8999}; do echo "$i" >> "$tiedosto"; done
 
-set +e
-
 
 # ota_portti_tiedostosta
 

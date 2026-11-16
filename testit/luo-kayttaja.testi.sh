@@ -5,12 +5,12 @@ source avustajat.sh
 kayttaja="matti"
 home="/home/$kayttaja"
 
-if luo-kayttaja.sh -s 2049 "$kayttaja"; then
-    testi_echo "luo-kayttaja loi yli kahden gigan kotikansion!"
+if luo-kayttaja.sh -s "$MAX_KOTI_KOKO"+1  "$kayttaja"; then
+    testi_echo "luo-kayttaja.sh loi yli $MAX_KOTI_KOKO MB, kotikansion!"
 fi
 
 if ! luo-kayttaja.sh -s 10 "$kayttaja"; then
-    testi_echo "luo-kayttaja palautti virheen"
+    testi_echo "luo-kayttaja.sh palautti virheen"
 fi
 
 onhan_olemassa "$home"
